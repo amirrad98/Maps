@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
 
 const projectStats = [
-  { label: 'Starter layers', value: '1' },
-  { label: 'Data format', value: 'GeoJSON' },
-  { label: 'Default area', value: 'Prince George' },
+  { label: 'Trail posts', value: '118' },
+  { label: 'Mapped routes', value: '94' },
+  { label: 'Route distance', value: '1,735 km' },
 ]
 
 export function Home() {
@@ -18,11 +18,11 @@ export function Home() {
               Map workspace
             </p>
             <h1 className="mt-3 text-3xl font-bold text-ink">
-              Prince George explorer
+              Prince George trail explorer
             </h1>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              A static React map app with reusable map components, local data
-              files, and a first explorer screen ready to extend.
+              Browse hiking.princegeorge.tech trail posts on an interactive map
+              with route geometry, trail details, source links, and photos.
             </p>
           </div>
           <Link to="/explorer">
@@ -58,27 +58,27 @@ export function Home() {
           <Database className="size-5 text-forest" aria-hidden="true" />
           <h2 className="mt-4 text-lg font-semibold">Static data</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Files in public/data can be replaced with local GeoJSON, JSON, or
-            CSV datasets.
+            WordPress trail posts are imported into JSON metadata and GeoJSON
+            route overlays under public/data.
           </p>
         </div>
         <div className="rounded-md border border-line bg-white p-5">
           <Layers className="size-5 text-sun" aria-hidden="true" />
           <h2 className="mt-4 text-lg font-semibold">Layer controls</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            The explorer starts with a toggleable points layer and room for new
-            map sections.
+            Search, filter categories, toggle routes or trail points, and open
+            the original trail posts.
           </p>
         </div>
         <div className="min-h-[360px] rounded-md border border-line bg-[linear-gradient(135deg,#e7f1ef_0%,#f7faf9_45%,#dbe8ef_100%)] p-5 md:col-span-3">
           <div className="grid h-full place-items-center rounded-md border border-dashed border-slate-300 bg-white/55">
             <div className="max-w-md text-center">
               <p className="text-sm font-semibold text-forest">
-                Next section slot
+                Trail data pipeline
               </p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Add future map modules under src/maps and expose them as routes
-                when the data model is ready.
+                Run npm run trails:sync to refresh the imported trail posts and
+                Waymark route overlays from the source website.
               </p>
             </div>
           </div>
