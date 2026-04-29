@@ -1,0 +1,49 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Downtown",
+        "type": "district"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.7497, 53.9171]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lheidli T'enneh Memorial Park",
+        "type": "park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.7359, 53.9085]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "University of Northern BC",
+        "type": "campus"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.8142, 53.8932]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "CN Centre",
+        "type": "venue"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.7832, 53.8848]
+      }
+    }
+  ]
+}
