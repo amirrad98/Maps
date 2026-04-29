@@ -7,9 +7,7 @@ test('opens explorer and toggles the sample layer', async ({ page }) => {
   await expect(page).toHaveURL(/#\/explorer$/)
   await expect(page.getByTestId('map-canvas')).toBeVisible()
 
-  const layerToggle = page.getByRole('checkbox', {
-    name: /show sample places/i,
-  })
+  const layerToggle = page.getByRole('checkbox', { name: /sample places/i })
   await expect(layerToggle).toBeChecked()
 
   await layerToggle.uncheck()

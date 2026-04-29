@@ -3,7 +3,32 @@ import type { LngLatLike, Map, StyleSpecification } from 'maplibre-gl'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { cn } from '../../lib/utils'
 
-const DEFAULT_STYLE = 'https://demotiles.maplibre.org/style.json'
+const DEFAULT_STYLE: StyleSpecification = {
+  version: 8,
+  glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+  sources: {
+    carto: {
+      type: 'raster',
+      tiles: [
+        'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+        'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+        'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+      ],
+      tileSize: 256,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    },
+  },
+  layers: [
+    {
+      id: 'carto-voyager',
+      type: 'raster',
+      source: 'carto',
+      minzoom: 0,
+      maxzoom: 20,
+    },
+  ],
+}
 
 type MapCanvasProps = {
   center: LngLatLike

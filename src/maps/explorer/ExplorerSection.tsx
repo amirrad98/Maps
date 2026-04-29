@@ -1,9 +1,18 @@
 import * as turf from '@turf/turf'
 import type { FeatureCollection, Point } from 'geojson'
 import type { GeoJSONSource, Map } from 'maplibre-gl'
-import { Eye, EyeOff, LocateFixed } from 'lucide-react'
+import {
+  Check,
+  Database,
+  Eye,
+  EyeOff,
+  Layers,
+  LocateFixed,
+  Map as MapIcon,
+} from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { MapCanvas } from '../../components/ui/MapCanvas'
+import { Button } from '../../components/ui/Button'
 
 const PRINCE_GEORGE_CENTER: [number, number] = [-122.7497, 53.9171]
 const SOURCE_ID = 'sample-points'
@@ -16,6 +25,12 @@ type SampleProperties = {
 }
 
 type SamplePoints = FeatureCollection<Point, SampleProperties>
+
+const layerStatus = [
+  { label: 'Base map', value: 'CARTO Voyager' },
+  { label: 'Overlay', value: 'Sample places' },
+  { label: 'Format', value: 'GeoJSON' },
+]
 
 function setLayerVisibility(map: Map, visible: boolean) {
   const visibility = visible ? 'visible' : 'none'
@@ -136,66 +151,135 @@ export function ExplorerSection() {
     setLayerVisibility(mapInstance, showSampleLayer)
   }, [mapInstance, showSampleLayer])
 
+  const fitToSampleData = useCallback(() => {
+    if (!mapInstance || !sampleData?.features.length) return
+
+    const bounds = turf.bbox(sampleData) as [number, number, number, number]
+
+    mapInstance.fitBounds(
+      [
+        [bounds[0], bounds[1]],
+        [bounds[2], bounds[3]],
+      ],
+      {
+        padding: 80,
+        maxZoom: 13,
+        duration: 700,
+      },
+    )
+  }, [mapInstance, sampleData])
+
   return (
-    <section className="mx-auto grid min-h-[calc(100vh-56px)] max-w-7xl gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[320px_1fr]">
-      <aside className="rounded-md border border-line bg-white p-4 shadow-panel">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold uppercase text-forest">
-              Explorer
-            </p>
-            <h1 className="mt-2 text-2xl font-bold text-ink">
-              Sample city layer
-            </h1>
+    <section className="mx-auto grid min-h-[calc(100vh-56px)] max-w-7xl gap-4 px-4 py-4 sm:px-6 md:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)]">
+      <aside className="h-fit rounded-md border border-line bg-white shadow-panel md:sticky md:top-4">
+        <div className="border-b border-line p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase text-forest">
+                Explorer
+              </p>
+              <h1 className="mt-1 text-xl font-bold text-ink">Map controls</h1>
+            </div>
+            <span className="grid size-9 place-items-center rounded-md bg-field text-water">
+              <LocateFixed className="size-5" aria-hidden="true" />
+            </span>
           </div>
-          <LocateFixed className="mt-1 size-5 text-water" aria-hidden="true" />
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            Turn layers on or off, inspect the active dataset, and reset the map
+            to the loaded sample places.
+          </p>
         </div>
 
-        <p className="mt-4 text-sm leading-6 text-slate-600">
-          Replace the sample GeoJSON with your own points, boundaries, or
-          analysis layers in public/data.
-        </p>
+        <div className="space-y-4 p-4">
+          <section>
+            <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink">
+              <Layers className="size-4 text-forest" aria-hidden="true" />
+              Layers
+            </div>
+            <label className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-line bg-field px-3 py-3 text-sm font-medium text-ink">
+              <span className="flex min-w-0 items-center gap-2">
+                {showSampleLayer ? (
+                  <Eye
+                    className="size-4 shrink-0 text-forest"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <EyeOff
+                    className="size-4 shrink-0 text-slate-500"
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="truncate">Sample places</span>
+              </span>
+              <input
+                checked={showSampleLayer}
+                className="size-4 shrink-0 accent-forest"
+                onChange={(event) => setShowSampleLayer(event.target.checked)}
+                type="checkbox"
+              />
+            </label>
+          </section>
 
-        <label className="mt-6 flex cursor-pointer items-center justify-between gap-3 rounded-md border border-line bg-field p-3 text-sm font-medium text-ink">
-          <span className="flex items-center gap-2">
-            {showSampleLayer ? (
-              <Eye className="size-4 text-forest" aria-hidden="true" />
-            ) : (
-              <EyeOff className="size-4 text-slate-500" aria-hidden="true" />
-            )}
-            Show sample places
-          </span>
-          <input
-            checked={showSampleLayer}
-            className="size-4 accent-forest"
-            onChange={(event) => setShowSampleLayer(event.target.checked)}
-            type="checkbox"
-          />
-        </label>
+          <section>
+            <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink">
+              <Database className="size-4 text-water" aria-hidden="true" />
+              Dataset
+            </div>
+            <dl className="overflow-hidden rounded-md border border-line text-sm">
+              <div className="flex items-center justify-between bg-white px-3 py-2.5">
+                <dt className="text-slate-500">Features</dt>
+                <dd className="font-semibold text-ink">
+                  {summary?.count ?? 'Loading'}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between border-t border-line bg-white px-3 py-2.5">
+                <dt className="text-slate-500">Farthest point</dt>
+                <dd className="font-semibold text-ink">
+                  {summary?.farthest ?? 'Loading'}
+                </dd>
+              </div>
+            </dl>
+          </section>
 
-        <dl className="mt-6 grid gap-3 text-sm">
-          <div className="flex items-center justify-between border-t border-line pt-3">
-            <dt className="text-slate-500">Features</dt>
-            <dd className="font-semibold text-ink">
-              {summary?.count ?? 'Loading'}
-            </dd>
-          </div>
-          <div className="flex items-center justify-between border-t border-line pt-3">
-            <dt className="text-slate-500">Farthest point</dt>
-            <dd className="font-semibold text-ink">
-              {summary?.farthest ?? 'Loading'}
-            </dd>
-          </div>
-          <div className="flex items-center justify-between border-t border-line pt-3">
-            <dt className="text-slate-500">Source</dt>
-            <dd className="font-semibold text-ink">GeoJSON</dd>
-          </div>
-        </dl>
+          <section>
+            <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink">
+              <MapIcon className="size-4 text-sun" aria-hidden="true" />
+              System
+            </div>
+            <div className="overflow-hidden rounded-md border border-line bg-white text-sm">
+              {layerStatus.map((item) => (
+                <div
+                  className="flex items-center justify-between gap-3 border-b border-line px-3 py-2.5 last:border-b-0"
+                  key={item.label}
+                >
+                  <span className="text-slate-500">{item.label}</span>
+                  <span className="flex items-center gap-1.5 font-semibold text-ink">
+                    <Check
+                      className="size-3.5 text-forest"
+                      aria-hidden="true"
+                    />
+                    {item.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <Button
+            className="w-full"
+            disabled={!sampleData || !mapInstance}
+            onClick={fitToSampleData}
+            variant="secondary"
+          >
+            <LocateFixed className="size-4" aria-hidden="true" />
+            Fit to places
+          </Button>
+        </div>
       </aside>
 
       <MapCanvas
         center={PRINCE_GEORGE_CENTER}
-        className="h-[calc(100vh-88px)] min-h-[560px]"
+        className="h-[calc(100vh-88px)] min-h-[620px]"
         onMapReady={setMapInstance}
         zoom={11}
       />
