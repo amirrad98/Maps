@@ -17,4 +17,13 @@ test('opens explorer and toggles the trail layers', async ({ page }) => {
   await expect(layerToggle).not.toBeChecked()
 
   await expect(page.getByText(/118 trails/i)).toBeVisible()
+
+  await expect(
+    page.getByRole('button', { name: /all trails 118/i }),
+  ).toBeVisible()
+  await page.getByRole('button', { name: /waterfalls 38/i }).click()
+  await expect(page.getByText(/38 trails/i)).toBeVisible()
+
+  await page.getByRole('button', { name: /all trails 118/i }).click()
+  await expect(page.getByText(/118 trails/i)).toBeVisible()
 })

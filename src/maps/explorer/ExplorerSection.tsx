@@ -4,21 +4,24 @@ import type {
   ExpressionSpecification,
   FilterSpecification,
   GeoJSONSource,
-  Map,
+  Map as MapLibreMap,
   MapLayerMouseEvent,
 } from 'maplibre-gl'
 import {
   Check,
+  Compass,
   Database,
   ExternalLink,
   Eye,
   EyeOff,
+  Footprints,
   Image as ImageIcon,
   Layers,
   LocateFixed,
   Map as MapIcon,
   Route,
   Search,
+  Trees,
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button } from '../../components/ui/Button'
@@ -42,6 +45,46 @@ const TRAIL_CENTER_FILTER = [
   ['get', 'kind'],
   'trail-center',
 ] as FilterSpecification
+const CATEGORY_GROUPS = [
+  {
+    title: 'Region',
+    icon: Compass,
+    categories: ['PG-East', 'PG-South', 'PG-North', 'PG-City', 'PG-West'],
+  },
+  {
+    title: 'Difficulty',
+    icon: Footprints,
+    categories: [
+      'Easy',
+      'Moderate',
+      'Strenuous',
+      'Very Strenuous',
+      'Accessible',
+    ],
+  },
+  {
+    title: 'Activity',
+    icon: Route,
+    categories: [
+      'Hiking',
+      'SnowShoeing',
+      'EV Friendly',
+      'Camping',
+      'Backpacking',
+    ],
+  },
+  {
+    title: 'Feature',
+    icon: Trees,
+    categories: [
+      'Waterfalls',
+      'Alpine Lake',
+      'Caves',
+      'Cabin',
+      '7 Summits of Northern BC 2024',
+    ],
+  },
+] as const
 
 type TrailLink = {
   label: string
@@ -90,7 +133,17 @@ type TrailFeatureCollection = FeatureCollection<
   TrailFeatureProperties
 >
 
-function setLayerVisibility(map: Map, layerId: string, visible: boolean) {
+type CategoryChip = {
+  label: string
+  value: string
+  count: number
+}
+
+function setLayerVisibility(
+  map: MapLibreMap,
+  layerId: string,
+  visible: boolean,
+) {
   if (!map.getLayer(layerId)) return
   map.setLayoutProperty(layerId, 'visibility', visible ? 'visible' : 'none')
 }
@@ -147,7 +200,7 @@ export function ExplorerSection() {
   const [trailData, setTrailData] = useState<TrailData | null>(null)
   const [trailGeoJson, setTrailGeoJson] =
     useState<TrailFeatureCollection | null>(null)
-  const [mapInstance, setMapInstance] = useState<Map | null>(null)
+  const [mapInstance, setMapInstance] = useState<MapLibreMap | null>(null)
   const [showRoutes, setShowRoutes] = useState(true)
   const [showPoints, setShowPoints] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -187,16 +240,28 @@ export function ExplorerSection() {
   const selectedTrail =
     trails.find((trail) => trail.id === selectedTrailId) ?? null
 
-  const categories = useMemo(() => {
-    const values = new Set<string>()
+  const categoryGroups = useMemo(() => {
+    const counts = new Map<string, number>()
 
     for (const trail of trails) {
       for (const category of trail.categories) {
-        if (category !== 'Trail') values.add(category)
+        if (category === 'Trail') continue
+        counts.set(category, (counts.get(category) ?? 0) + 1)
       }
     }
 
-    return ['All', ...Array.from(values).sort((a, b) => a.localeCompare(b))]
+    return CATEGORY_GROUPS.map((group) => ({
+      ...group,
+      categories: group.categories
+        .map(
+          (category): CategoryChip => ({
+            label: category,
+            value: category,
+            count: counts.get(category) ?? 0,
+          }),
+        )
+        .filter((category) => category.count > 0),
+    })).filter((group) => group.categories.length > 0)
   }, [trails])
 
   const filteredTrails = useMemo(() => {
@@ -229,7 +294,7 @@ export function ExplorerSection() {
   }, [filteredTrails])
 
   const applyTrailLayers = useCallback(
-    (map: Map) => {
+    (map: MapLibreMap) => {
       if (!trailGeoJson) return
 
       if (!map.getSource(SOURCE_ID)) {
@@ -470,7 +535,7 @@ export function ExplorerSection() {
 
   return (
     <section className="mx-auto grid min-h-[calc(100vh-56px)] max-w-[1600px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[360px_minmax(0,1fr)_360px]">
-      <aside className="h-fit rounded-md border border-line bg-white shadow-panel lg:sticky lg:top-4">
+      <aside className="h-fit overflow-hidden rounded-md border border-line bg-white shadow-panel lg:sticky lg:top-4 lg:max-h-[calc(100vh-88px)]">
         <div className="border-b border-line p-4">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -491,7 +556,7 @@ export function ExplorerSection() {
           </p>
         </div>
 
-        <div className="space-y-4 p-4">
+        <div className="space-y-4 overflow-auto p-4 lg:max-h-[calc(100vh-272px)]">
           <section>
             <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink">
               <Search className="size-4 text-water" aria-hidden="true" />
@@ -511,17 +576,77 @@ export function ExplorerSection() {
               <Database className="size-4 text-forest" aria-hidden="true" />
               Category
             </div>
-            <select
-              className="h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none ring-water transition focus:ring-2"
-              onChange={(event) => setSelectedCategory(event.target.value)}
-              value={selectedCategory}
-            >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
+            <div className="rounded-md border border-line bg-white p-2">
+              <button
+                className={`mb-3 flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
+                  selectedCategory === 'All'
+                    ? 'bg-forest text-white'
+                    : 'bg-field text-ink hover:bg-slate-100'
+                }`}
+                onClick={() => setSelectedCategory('All')}
+                type="button"
+              >
+                <span>All trails</span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs ${
+                    selectedCategory === 'All'
+                      ? 'bg-white/20 text-white'
+                      : 'bg-white text-slate-600'
+                  }`}
+                >
+                  {trails.length}
+                </span>
+              </button>
+
+              <div className="grid gap-3">
+                {categoryGroups.map((group) => {
+                  const Icon = group.icon
+
+                  return (
+                    <div key={group.title}>
+                      <div className="mb-1.5 flex items-center gap-1.5 px-1 text-xs font-semibold uppercase text-slate-500">
+                        <Icon
+                          className="size-3.5 text-forest"
+                          aria-hidden="true"
+                        />
+                        {group.title}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {group.categories.map((category) => {
+                          const isSelected = selectedCategory === category.value
+
+                          return (
+                            <button
+                              className={`inline-flex max-w-full items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
+                                isSelected
+                                  ? 'border-forest bg-forest text-white'
+                                  : 'border-line bg-white text-ink hover:border-forest/50 hover:bg-emerald-50'
+                              }`}
+                              key={category.value}
+                              onClick={() =>
+                                setSelectedCategory(category.value)
+                              }
+                              type="button"
+                            >
+                              <span className="truncate">{category.label}</span>
+                              <span
+                                className={`rounded-full px-1.5 py-0.5 text-[11px] leading-none ${
+                                  isSelected
+                                    ? 'bg-white/20 text-white'
+                                    : 'bg-field text-slate-500'
+                                }`}
+                              >
+                                {category.count}
+                              </span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </section>
 
           <section>
