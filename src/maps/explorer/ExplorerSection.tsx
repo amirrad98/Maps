@@ -10,7 +10,6 @@ import type {
 import {
   Check,
   Compass,
-  Database,
   ExternalLink,
   Eye,
   EyeOff,
@@ -21,9 +20,10 @@ import {
   Map as MapIcon,
   Route,
   Search,
+  SlidersHorizontal,
   Trees,
 } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '../../components/ui/Button'
 import { MapCanvas } from '../../components/ui/MapCanvas'
 
@@ -109,6 +109,54 @@ type Trail = {
   distanceKm: number
   featureCount: number
   hasRoute: boolean
+  source: 'wordpress' | 'alltrails'
+  hidden?: boolean
+  duplicateOf?: number
+  alltrails?: {
+    avgRating: number
+    numReviews: number
+    numPhotos: number
+    elevationGain: number
+    difficultyRating: string
+    routeType: string
+    durationMinutes: number
+    popularity: number
+  }
+}
+
+type AllTrailsRaw = {
+  ID: number
+  name: string
+  lat?: number
+  lng?: number
+  _geoloc?: {
+    lat?: number
+    lng?: number
+  }
+  length?: number
+  elevation_gain?: number
+  difficulty_rating?: string | number
+  route_type?: string
+  avg_rating?: number
+  num_reviews?: number
+  num_photos?: number
+  photos_count?: number
+  slug: string
+  popularity?: number
+  duration_minutes?: number
+  duration_minutes_hiking?: number
+  country_name?: string
+  state_name?: string
+  location_label?: string
+}
+
+type AllTrailsData = {
+  source: string
+  region: string
+  generatedAt: string
+  count: number
+  trails?: AllTrailsRaw[]
+  searchResults?: AllTrailsRaw[]
 }
 
 type TrailData = {
@@ -119,6 +167,136 @@ type TrailData = {
   trails: Trail[]
 }
 
+const DIFFICULTY_LABELS: Record<string, string> = {
+  '1': 'Easy',
+  '3': 'Moderate',
+  '5': 'Strenuous',
+  '7': 'Very Strenuous',
+}
+
+const ROUTE_TYPE_LABELS: Record<string, string> = {
+  L: 'Loop',
+  O: 'Out & Back',
+  P: 'Point to Point',
+}
+
+function normalizeForMatch(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/\b(trail|loop|hike|path|route|connector)\b/g, '')
+    .replace(/[^a-z0-9]/g, '')
+}
+
+function haversineKm(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number,
+): number {
+  const R = 6371
+  const dLat = ((lat2 - lat1) * Math.PI) / 180
+  const dLng = ((lng2 - lng1) * Math.PI) / 180
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function convertAllTrailsTrail(raw: AllTrailsRaw): Trail {
+  const difficultyRating = String(raw.difficulty_rating ?? '')
+  const diffLabel = DIFFICULTY_LABELS[difficultyRating] ?? 'Moderate'
+  const lat = raw.lat ?? raw._geoloc?.lat ?? 0
+  const lng = raw.lng ?? raw._geoloc?.lng ?? 0
+  const length = raw.length ?? 0
+  const elevationGain = raw.elevation_gain ?? 0
+  const routeType = raw.route_type ?? ''
+  const avgRating = raw.avg_rating ?? 0
+  const numReviews = raw.num_reviews ?? 0
+  const numPhotos = raw.num_photos ?? raw.photos_count ?? 0
+  const durationMinutes =
+    raw.duration_minutes ?? raw.duration_minutes_hiking ?? 0
+
+  return {
+    id: raw.ID,
+    slug: raw.slug,
+    title: raw.name,
+    url: `https://www.alltrails.com/${raw.slug}`,
+    date: '',
+    modified: '',
+    description: '',
+    excerpt: '',
+    categories: [diffLabel, 'Hiking'],
+    image: null,
+    images: [],
+    links: [
+      {
+        label: 'View on AllTrails',
+        href: `https://www.alltrails.com/${raw.slug}`,
+      },
+    ],
+    center: [lng, lat],
+    forecastCoordinate: null,
+    distanceKm: Number((length / 1000).toFixed(2)),
+    featureCount: 0,
+    hasRoute: false,
+    source: 'alltrails',
+    alltrails: {
+      avgRating,
+      numReviews,
+      numPhotos,
+      elevationGain,
+      difficultyRating,
+      routeType,
+      durationMinutes,
+      popularity: raw.popularity ?? 0,
+    },
+  }
+}
+
+function mergeAndDeduplicate(wpTrails: Trail[], atTrails: Trail[]): Trail[] {
+  const tagged = wpTrails.map((t) => ({ ...t, source: 'wordpress' as const }))
+  const converted = atTrails
+
+  const merged: Trail[] = [...tagged]
+
+  for (const atTrail of converted) {
+    const normAt = normalizeForMatch(atTrail.title)
+
+    const match = tagged.find((wp) => {
+      const normWp = normalizeForMatch(wp.title)
+      const nameMatch =
+        normWp.includes(normAt) || normAt.includes(normWp) || normWp === normAt
+      if (!nameMatch) return false
+
+      if (wp.center && atTrail.center) {
+        const dist = haversineKm(
+          wp.center[1],
+          wp.center[0],
+          atTrail.center[1],
+          atTrail.center[0],
+        )
+        return dist < 10
+      }
+      return true
+    })
+
+    if (match) {
+      const idx = merged.findIndex((t) => t.id === match.id)
+      if (idx !== -1) {
+        merged[idx] = { ...merged[idx], alltrails: atTrail.alltrails }
+      }
+      merged.push({ ...atTrail, hidden: true, duplicateOf: match.id })
+    } else {
+      merged.push(atTrail)
+    }
+  }
+
+  return merged
+}
+
 type TrailFeatureProperties = {
   trailId?: number
   trailSlug?: string
@@ -126,6 +304,7 @@ type TrailFeatureProperties = {
   kind?: string
   stroke?: string
   type?: string
+  source?: string
 }
 
 type TrailFeatureCollection = FeatureCollection<
@@ -205,7 +384,9 @@ export function ExplorerSection() {
   const [showPoints, setShowPoints] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [selectedTrailId, setSelectedTrailId] = useState<number | null>(null)
+  const hasFitInitialTrails = useRef(false)
 
   useEffect(() => {
     Promise.all([
@@ -223,12 +404,57 @@ export function ExplorerSection() {
           return response.json() as Promise<TrailFeatureCollection>
         },
       ),
+      fetch(`${import.meta.env.BASE_URL}data/alltrails.json`)
+        .then((response) => {
+          if (!response.ok) return null
+          return response.json() as Promise<AllTrailsData>
+        })
+        .catch(() => null),
     ])
-      .then(([metadata, geoJson]) => {
-        setTrailData(metadata)
-        setTrailGeoJson(geoJson)
+      .then(([metadata, geoJson, alltrailsData]) => {
+        const alltrailsRecords =
+          alltrailsData?.trails ?? alltrailsData?.searchResults ?? []
+        const atTrails = alltrailsData
+          ? alltrailsRecords
+              .filter((trail) => {
+                const lat = trail.lat ?? trail._geoloc?.lat
+                const lng = trail.lng ?? trail._geoloc?.lng
+                return Number.isFinite(lat) && Number.isFinite(lng)
+              })
+              .map(convertAllTrailsTrail)
+          : []
+        const merged = mergeAndDeduplicate(metadata.trails, atTrails)
+
+        const atFeatures = merged
+          .filter((t) => t.source === 'alltrails' && !t.hidden && t.center)
+          .map((t) => ({
+            type: 'Feature' as const,
+            properties: {
+              trailId: t.id,
+              trailSlug: t.slug,
+              trailTitle: t.title,
+              kind: 'trail-center',
+              source: 'alltrails',
+            },
+            geometry: {
+              type: 'Point' as const,
+              coordinates: t.center!,
+            },
+          }))
+
+        const enrichedGeoJson: TrailFeatureCollection = {
+          ...geoJson,
+          features: [...geoJson.features, ...atFeatures],
+        }
+
+        setTrailData({
+          ...metadata,
+          count: merged.filter((t) => !t.hidden).length,
+          trails: merged,
+        })
+        setTrailGeoJson(enrichedGeoJson)
         setSelectedTrailId(
-          metadata.trails.find((trail) => trail.center)?.id ?? null,
+          merged.find((trail) => trail.center && !trail.hidden)?.id ?? null,
         )
       })
       .catch((error: unknown) => {
@@ -237,13 +463,17 @@ export function ExplorerSection() {
   }, [])
 
   const trails = trailData?.trails ?? EMPTY_TRAILS
+  const visibleTrails = useMemo(
+    () => trails.filter((trail) => !trail.hidden),
+    [trails],
+  )
   const selectedTrail =
     trails.find((trail) => trail.id === selectedTrailId) ?? null
 
   const categoryGroups = useMemo(() => {
     const counts = new Map<string, number>()
 
-    for (const trail of trails) {
+    for (const trail of visibleTrails) {
       for (const category of trail.categories) {
         if (category === 'Trail') continue
         counts.set(category, (counts.get(category) ?? 0) + 1)
@@ -262,12 +492,15 @@ export function ExplorerSection() {
         )
         .filter((category) => category.count > 0),
     })).filter((group) => group.categories.length > 0)
-  }, [trails])
+  }, [visibleTrails])
+
+  const selectedCategoryLabel =
+    selectedCategory === 'All' ? 'All trails' : selectedCategory
 
   const filteredTrails = useMemo(() => {
     const query = normalizeSearch(searchQuery)
 
-    return trails.filter((trail) => {
+    return visibleTrails.filter((trail) => {
       const matchesSearch =
         !query ||
         normalizeSearch(
@@ -279,7 +512,7 @@ export function ExplorerSection() {
 
       return matchesSearch && matchesCategory
     })
-  }, [searchQuery, selectedCategory, trails])
+  }, [searchQuery, selectedCategory, visibleTrails])
 
   const stats = useMemo(() => {
     const totalDistance = filteredTrails.reduce(
@@ -362,7 +595,12 @@ export function ExplorerSection() {
           source: SOURCE_ID,
           filter: TRAIL_CENTER_FILTER,
           paint: {
-            'circle-color': '#2f7d55',
+            'circle-color': [
+              'case',
+              ['==', ['get', 'source'], 'alltrails'],
+              '#059669',
+              '#2f7d55',
+            ] as ExpressionSpecification,
             'circle-radius': [
               'interpolate',
               ['linear'],
@@ -470,13 +708,51 @@ export function ExplorerSection() {
     }
   }, [mapInstance, selectedTrailId])
 
+  const fitVisibleTrails = useCallback(() => {
+    if (!mapInstance) return
+
+    const bounds = getTrailBounds(filteredTrails)
+    if (!bounds) return
+
+    mapInstance.fitBounds(
+      [
+        [bounds[0], bounds[1]],
+        [bounds[2], bounds[3]],
+      ],
+      {
+        padding: 80,
+        maxZoom: 8,
+        duration: 700,
+      },
+    )
+  }, [filteredTrails, mapInstance])
+
+  const focusTrail = useCallback(
+    (trail: Trail | null) => {
+      if (!mapInstance) return
+      if (!trail?.center) return
+
+      mapInstance.easeTo({
+        center: trail.center,
+        zoom: Math.max(mapInstance.getZoom(), trail.hasRoute ? 12 : 11),
+        duration: 650,
+      })
+    },
+    [mapInstance],
+  )
+
   useEffect(() => {
     if (!mapInstance) return
 
     const handleClick = (event: MapLayerMouseEvent) => {
       const feature = event.features?.[0]
       const trailId = Number(feature?.properties?.trailId)
-      if (Number.isFinite(trailId)) setSelectedTrailId(trailId)
+      const trail = trails.find((item) => item.id === trailId)
+
+      if (trail) {
+        setSelectedTrailId(trail.id)
+        focusTrail(trail)
+      }
     }
 
     const setPointer = () => {
@@ -500,38 +776,27 @@ export function ExplorerSection() {
         mapInstance.off('mouseleave', layerId, clearPointer)
       }
     }
-  }, [mapInstance])
-
-  const fitToTrails = useCallback(
-    (scope: 'all' | 'selected' = 'all') => {
-      if (!mapInstance) return
-
-      const bounds =
-        scope === 'selected' && selectedTrail?.center
-          ? getTrailBounds([selectedTrail])
-          : getTrailBounds(filteredTrails)
-
-      if (!bounds) return
-
-      mapInstance.fitBounds(
-        [
-          [bounds[0], bounds[1]],
-          [bounds[2], bounds[3]],
-        ],
-        {
-          padding: 80,
-          maxZoom: scope === 'selected' ? 12 : 8,
-          duration: 700,
-        },
-      )
-    },
-    [filteredTrails, mapInstance, selectedTrail],
-  )
+  }, [focusTrail, mapInstance, trails])
 
   useEffect(() => {
-    if (!mapInstance || !trailData) return
-    fitToTrails('all')
-  }, [fitToTrails, mapInstance, trailData])
+    if (!mapInstance || !trailData || hasFitInitialTrails.current) return
+
+    const bounds = getTrailBounds(visibleTrails)
+    if (!bounds) return
+
+    mapInstance.fitBounds(
+      [
+        [bounds[0], bounds[1]],
+        [bounds[2], bounds[3]],
+      ],
+      {
+        padding: 80,
+        maxZoom: 8,
+        duration: 700,
+      },
+    )
+    hasFitInitialTrails.current = true
+  }, [mapInstance, trailData, visibleTrails])
 
   return (
     <section className="mx-auto grid min-h-[calc(100vh-56px)] max-w-[1600px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[360px_minmax(0,1fr)_360px]">
@@ -573,79 +838,127 @@ export function ExplorerSection() {
 
           <section>
             <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink">
-              <Database className="size-4 text-forest" aria-hidden="true" />
-              Category
+              <SlidersHorizontal
+                className="size-4 text-forest"
+                aria-hidden="true"
+              />
+              Filters
             </div>
             <div className="rounded-md border border-line bg-white p-2">
               <button
-                className={`mb-3 flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
-                  selectedCategory === 'All'
-                    ? 'bg-forest text-white'
-                    : 'bg-field text-ink hover:bg-slate-100'
-                }`}
-                onClick={() => setSelectedCategory('All')}
+                aria-expanded={filtersOpen}
+                className="flex w-full items-center justify-between gap-3 rounded-md bg-forest px-3 py-2.5 text-left text-sm font-semibold text-white transition hover:bg-forest/90 focus:outline-none focus:ring-2 focus:ring-water"
+                onClick={() => setFiltersOpen((open) => !open)}
                 type="button"
               >
-                <span>All trails</span>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs ${
-                    selectedCategory === 'All'
-                      ? 'bg-white/20 text-white'
-                      : 'bg-white text-slate-600'
-                  }`}
-                >
-                  {trails.length}
+                <span className="flex min-w-0 items-center gap-2">
+                  <SlidersHorizontal
+                    className="size-4 shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>Filters</span>
+                </span>
+                <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs text-white">
+                  {stats.count}
                 </span>
               </button>
 
-              <div className="grid gap-3">
-                {categoryGroups.map((group) => {
-                  const Icon = group.icon
-
-                  return (
-                    <div key={group.title}>
-                      <div className="mb-1.5 flex items-center gap-1.5 px-1 text-xs font-semibold uppercase text-slate-500">
-                        <Icon
-                          className="size-3.5 text-forest"
-                          aria-hidden="true"
-                        />
-                        {group.title}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {group.categories.map((category) => {
-                          const isSelected = selectedCategory === category.value
-
-                          return (
-                            <button
-                              className={`inline-flex max-w-full items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
-                                isSelected
-                                  ? 'border-forest bg-forest text-white'
-                                  : 'border-line bg-white text-ink hover:border-forest/50 hover:bg-emerald-50'
-                              }`}
-                              key={category.value}
-                              onClick={() =>
-                                setSelectedCategory(category.value)
-                              }
-                              type="button"
-                            >
-                              <span className="truncate">{category.label}</span>
-                              <span
-                                className={`rounded-full px-1.5 py-0.5 text-[11px] leading-none ${
-                                  isSelected
-                                    ? 'bg-white/20 text-white'
-                                    : 'bg-field text-slate-500'
-                                }`}
-                              >
-                                {category.count}
-                              </span>
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                })}
+              <div className="mt-2 flex items-center justify-between gap-3 px-1 text-xs">
+                <span className="min-w-0 truncate text-slate-500">
+                  Active:{' '}
+                  <span className="font-semibold text-ink">
+                    {selectedCategoryLabel}
+                  </span>
+                </span>
+                {selectedCategory !== 'All' && (
+                  <button
+                    className="shrink-0 font-semibold text-forest hover:text-forest/80"
+                    onClick={() => setSelectedCategory('All')}
+                    type="button"
+                  >
+                    Clear
+                  </button>
+                )}
               </div>
+
+              {filtersOpen && (
+                <div className="mt-3 grid gap-3 border-t border-line pt-3">
+                  <button
+                    className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
+                      selectedCategory === 'All'
+                        ? 'bg-forest text-white'
+                        : 'bg-field text-ink hover:bg-slate-100'
+                    }`}
+                    onClick={() => {
+                      setSelectedCategory('All')
+                      setFiltersOpen(false)
+                    }}
+                    type="button"
+                  >
+                    <span>All trails</span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs ${
+                        selectedCategory === 'All'
+                          ? 'bg-white/20 text-white'
+                          : 'bg-white text-slate-600'
+                      }`}
+                    >
+                      {visibleTrails.length}
+                    </span>
+                  </button>
+
+                  {categoryGroups.map((group) => {
+                    const Icon = group.icon
+
+                    return (
+                      <div key={group.title}>
+                        <div className="mb-1.5 flex items-center gap-1.5 px-1 text-xs font-semibold uppercase text-slate-500">
+                          <Icon
+                            className="size-3.5 text-forest"
+                            aria-hidden="true"
+                          />
+                          {group.title}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {group.categories.map((category) => {
+                            const isSelected =
+                              selectedCategory === category.value
+
+                            return (
+                              <button
+                                className={`inline-flex max-w-full items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
+                                  isSelected
+                                    ? 'border-forest bg-forest text-white'
+                                    : 'border-line bg-white text-ink hover:border-forest/50 hover:bg-emerald-50'
+                                }`}
+                                key={category.value}
+                                onClick={() => {
+                                  setSelectedCategory(category.value)
+                                  setFiltersOpen(false)
+                                }}
+                                type="button"
+                              >
+                                <span className="truncate">
+                                  {category.label}
+                                </span>
+                                <span
+                                  className={`rounded-full px-1.5 py-0.5 text-[11px] leading-none ${
+                                    isSelected
+                                      ? 'bg-white/20 text-white'
+                                      : 'bg-field text-slate-500'
+                                  }`}
+                                >
+                                  {category.count}
+                                </span>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           </section>
 
@@ -722,7 +1035,7 @@ export function ExplorerSection() {
           <Button
             className="w-full"
             disabled={!trailData || !mapInstance}
-            onClick={() => fitToTrails('all')}
+            onClick={fitVisibleTrails}
             variant="secondary"
           >
             <LocateFixed className="size-4" aria-hidden="true" />
@@ -756,23 +1069,47 @@ export function ExplorerSection() {
                     ? 'bg-emerald-50'
                     : 'bg-white hover:bg-field'
                 }`}
-                key={trail.id}
+                key={`${trail.source}-${trail.id}`}
                 onClick={() => {
                   setSelectedTrailId(trail.id)
-                  window.setTimeout(() => fitToTrails('selected'), 0)
+                  focusTrail(trail)
                 }}
                 type="button"
               >
-                <span className="font-semibold text-ink">{trail.title}</span>
+                <span className="flex items-center gap-2">
+                  <span className="font-semibold text-ink">{trail.title}</span>
+                  <span
+                    className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none ${
+                      trail.source === 'alltrails'
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-blue-100 text-blue-700'
+                    }`}
+                  >
+                    {trail.source === 'alltrails' ? 'AT' : 'WP'}
+                  </span>
+                </span>
                 <span className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                   <span>
                     {trail.distanceKm
                       ? `${trail.distanceKm.toFixed(1)} km`
                       : 'No route distance'}
                   </span>
-                  <span>
-                    {trail.hasRoute ? 'Route geometry' : 'Point/details only'}
-                  </span>
+                  {trail.alltrails ? (
+                    <>
+                      <span>
+                        {trail.alltrails.avgRating.toFixed(1)} (
+                        {trail.alltrails.numReviews})
+                      </span>
+                      <span>
+                        {DIFFICULTY_LABELS[trail.alltrails.difficultyRating] ??
+                          'Moderate'}
+                      </span>
+                    </>
+                  ) : (
+                    <span>
+                      {trail.hasRoute ? 'Route geometry' : 'Point/details only'}
+                    </span>
+                  )}
                 </span>
               </button>
             ))}
@@ -784,9 +1121,24 @@ export function ExplorerSection() {
             <p className="text-xs font-semibold uppercase text-forest">
               Selected trail
             </p>
-            <h2 className="mt-1 text-lg font-bold text-ink">
-              {selectedTrail?.title ?? 'Choose a trail'}
-            </h2>
+            <div className="mt-1 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-ink">
+                {selectedTrail?.title ?? 'Choose a trail'}
+              </h2>
+              {selectedTrail && (
+                <span
+                  className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none ${
+                    selectedTrail.source === 'alltrails'
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : 'bg-blue-100 text-blue-700'
+                  }`}
+                >
+                  {selectedTrail.source === 'alltrails'
+                    ? 'AllTrails'
+                    : 'WordPress'}
+                </span>
+              )}
+            </div>
           </div>
 
           {selectedTrail ? (
@@ -819,24 +1171,69 @@ export function ExplorerSection() {
                       : 'N/A'}
                   </dd>
                 </div>
-                <div className="rounded-md bg-field p-3">
-                  <dt className="text-slate-500">Features</dt>
-                  <dd className="mt-1 font-semibold text-ink">
-                    {selectedTrail.featureCount}
-                  </dd>
-                </div>
-                <div className="rounded-md bg-field p-3">
-                  <dt className="text-slate-500">Published</dt>
-                  <dd className="mt-1 font-semibold text-ink">
-                    {formatDate(selectedTrail.date)}
-                  </dd>
-                </div>
-                <div className="rounded-md bg-field p-3">
-                  <dt className="text-slate-500">Images</dt>
-                  <dd className="mt-1 font-semibold text-ink">
-                    {selectedTrail.images.length}
-                  </dd>
-                </div>
+                {selectedTrail.alltrails ? (
+                  <>
+                    <div className="rounded-md bg-field p-3">
+                      <dt className="text-slate-500">Rating</dt>
+                      <dd className="mt-1 font-semibold text-ink">
+                        {selectedTrail.alltrails.avgRating.toFixed(1)} (
+                        {selectedTrail.alltrails.numReviews})
+                      </dd>
+                    </div>
+                    <div className="rounded-md bg-field p-3">
+                      <dt className="text-slate-500">Elev. gain</dt>
+                      <dd className="mt-1 font-semibold text-ink">
+                        {Math.round(selectedTrail.alltrails.elevationGain)} m
+                      </dd>
+                    </div>
+                    <div className="rounded-md bg-field p-3">
+                      <dt className="text-slate-500">Duration</dt>
+                      <dd className="mt-1 font-semibold text-ink">
+                        {selectedTrail.alltrails.durationMinutes >= 60
+                          ? `${Math.floor(selectedTrail.alltrails.durationMinutes / 60)}h ${selectedTrail.alltrails.durationMinutes % 60}m`
+                          : `${selectedTrail.alltrails.durationMinutes}m`}
+                      </dd>
+                    </div>
+                    <div className="rounded-md bg-field p-3">
+                      <dt className="text-slate-500">Difficulty</dt>
+                      <dd className="mt-1 font-semibold text-ink">
+                        {DIFFICULTY_LABELS[
+                          selectedTrail.alltrails.difficultyRating
+                        ] ?? 'Moderate'}
+                      </dd>
+                    </div>
+                    <div className="rounded-md bg-field p-3">
+                      <dt className="text-slate-500">Route type</dt>
+                      <dd className="mt-1 font-semibold text-ink">
+                        {ROUTE_TYPE_LABELS[selectedTrail.alltrails.routeType] ??
+                          selectedTrail.alltrails.routeType}
+                      </dd>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="rounded-md bg-field p-3">
+                      <dt className="text-slate-500">Features</dt>
+                      <dd className="mt-1 font-semibold text-ink">
+                        {selectedTrail.featureCount}
+                      </dd>
+                    </div>
+                    <div className="rounded-md bg-field p-3">
+                      <dt className="text-slate-500">Published</dt>
+                      <dd className="mt-1 font-semibold text-ink">
+                        {selectedTrail.date
+                          ? formatDate(selectedTrail.date)
+                          : 'N/A'}
+                      </dd>
+                    </div>
+                    <div className="rounded-md bg-field p-3">
+                      <dt className="text-slate-500">Images</dt>
+                      <dd className="mt-1 font-semibold text-ink">
+                        {selectedTrail.images.length}
+                      </dd>
+                    </div>
+                  </>
+                )}
               </dl>
 
               <div className="flex flex-wrap gap-2">
@@ -855,16 +1252,22 @@ export function ExplorerSection() {
 
               <div className="grid gap-2">
                 <a
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md bg-forest px-4 text-sm font-semibold text-white hover:bg-forest/90"
+                  className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold text-white hover:opacity-90 ${
+                    selectedTrail.source === 'alltrails'
+                      ? 'bg-emerald-600'
+                      : 'bg-forest'
+                  }`}
                   href={selectedTrail.url}
                   rel="noreferrer"
                   target="_blank"
                 >
-                  Open source post
+                  {selectedTrail.source === 'alltrails'
+                    ? 'View on AllTrails'
+                    : 'Open source post'}
                   <ExternalLink className="size-4" aria-hidden="true" />
                 </a>
                 <Button
-                  onClick={() => fitToTrails('selected')}
+                  onClick={() => focusTrail(selectedTrail)}
                   variant="secondary"
                 >
                   <LocateFixed className="size-4" aria-hidden="true" />

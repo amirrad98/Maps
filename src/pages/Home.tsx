@@ -1,89 +1,143 @@
-import { ArrowRight, Database, Layers, MapPinned } from 'lucide-react'
+import { Bike, Building2, Car, Fish, Mountain, Trees } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { Button } from '../components/ui/Button'
 
-const projectStats = [
-  { label: 'Trail posts', value: '118' },
-  { label: 'Mapped routes', value: '94' },
-  { label: 'Route distance', value: '1,735 km' },
+const mapCards = [
+  {
+    title: 'Trail Explorer',
+    description:
+      'Prince George and British Columbia hikes with route overlays, trail centers, source links, ratings, and filters.',
+    status: 'Live',
+    href: '/explorer',
+    icon: Mountain,
+    tint: 'bg-emerald-50 text-forest',
+    image:
+      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
+    stats: ['290 trails', '94 route maps', 'BC coverage'],
+  },
+  {
+    title: 'Fish Stats',
+    description:
+      'BC fish stocking totals by region with species filters, proportional bubbles, and stocking leaderboard.',
+    status: 'Live',
+    href: '/fish',
+    icon: Fish,
+    tint: 'bg-cyan-50 text-water',
+    image:
+      'https://images.unsplash.com/photo-1688656116639-106f7bcd66d4?auto=format&fit=crop&w=1200&q=80',
+    stats: ['4.94M fish', '673 lakes', '2025 review'],
+  },
+  {
+    title: 'City Layers',
+    description:
+      'A civic map workspace for neighborhoods, parks, facilities, and local planning layers.',
+    status: 'Planned',
+    icon: Building2,
+    tint: 'bg-sky-50 text-water',
+    image:
+      'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80',
+    stats: ['Facilities', 'Parks', 'Boundaries'],
+  },
+  {
+    title: 'Road Access',
+    description:
+      'Forest service roads, trailhead access, parking notes, and EV-friendly trip planning.',
+    status: 'Planned',
+    icon: Car,
+    tint: 'bg-amber-50 text-sun',
+    image:
+      'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80',
+    stats: ['Trailheads', 'Access notes', 'EV stops'],
+  },
+  {
+    title: 'Recreation Map',
+    description:
+      'Camping, biking, snowshoeing, cabins, waterfalls, alpine lakes, and seasonal outdoor layers.',
+    status: 'Planned',
+    icon: Bike,
+    tint: 'bg-slate-100 text-ink',
+    image:
+      'https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1200&q=80',
+    stats: ['Activities', 'Features', 'Seasons'],
+  },
 ]
 
 export function Home() {
   return (
-    <section className="mx-auto grid min-h-[calc(100vh-56px)] max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[360px_1fr]">
-      <aside className="flex flex-col justify-between rounded-md border border-line bg-white p-5 shadow-panel">
-        <div className="space-y-5">
+    <main className="mx-auto min-h-[calc(100vh-56px)] max-w-7xl px-4 py-6 sm:px-6">
+      <section>
+        <div className="mb-4 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase text-forest">
-              Map workspace
-            </p>
-            <h1 className="mt-3 text-3xl font-bold text-ink">
-              Prince George trail explorer
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Browse hiking.princegeorge.tech trail posts on an interactive map
-              with route geometry, trail details, source links, and photos.
-            </p>
+            <p className="text-xs font-semibold uppercase text-forest">Maps</p>
+            <h2 className="mt-1 text-2xl font-bold text-ink">Map library</h2>
           </div>
-          <Link to="/explorer">
-            <Button className="w-full">
-              Open explorer
-              <ArrowRight className="size-4" aria-hidden="true" />
-            </Button>
-          </Link>
+          <Trees className="size-6 text-forest" aria-hidden="true" />
         </div>
-        <dl className="mt-8 grid gap-3">
-          {projectStats.map((item) => (
-            <div
-              className="flex items-center justify-between border-t border-line pt-3 text-sm"
-              key={item.label}
-            >
-              <dt className="text-slate-500">{item.label}</dt>
-              <dd className="font-semibold text-ink">{item.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </aside>
 
-      <div className="grid gap-4 md:grid-cols-3 lg:auto-rows-fr">
-        <div className="rounded-md border border-line bg-white p-5">
-          <MapPinned className="size-5 text-water" aria-hidden="true" />
-          <h2 className="mt-4 text-lg font-semibold">Interactive map</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            MapLibre renders the base map and custom data layers without a
-            backend.
-          </p>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {mapCards.map((map) => {
+            const Icon = map.icon
+            const content = (
+              <>
+                <div className="relative h-36 overflow-hidden bg-field">
+                  <img
+                    alt=""
+                    className="size-full object-cover transition duration-300 group-hover:scale-105"
+                    src={map.image}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/55 to-transparent" />
+                  <span className="absolute left-3 top-3 rounded-full bg-white/92 px-2.5 py-1 text-xs font-semibold text-ink">
+                    {map.status}
+                  </span>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="text-lg font-bold text-ink">
+                        {map.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {map.description}
+                      </p>
+                    </div>
+                    <span
+                      className={`grid size-9 shrink-0 place-items-center rounded-md ${map.tint}`}
+                    >
+                      <Icon className="size-5" aria-hidden="true" />
+                    </span>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {map.stats.map((stat) => (
+                      <span
+                        className="rounded-full bg-field px-2.5 py-1 text-xs font-medium text-slate-600"
+                        key={stat}
+                      >
+                        {stat}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )
+
+            return map.href ? (
+              <Link
+                className="group overflow-hidden rounded-md border border-line bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-panel"
+                key={map.title}
+                to={map.href}
+              >
+                {content}
+              </Link>
+            ) : (
+              <article
+                className="group overflow-hidden rounded-md border border-line bg-white shadow-sm"
+                key={map.title}
+              >
+                {content}
+              </article>
+            )
+          })}
         </div>
-        <div className="rounded-md border border-line bg-white p-5">
-          <Database className="size-5 text-forest" aria-hidden="true" />
-          <h2 className="mt-4 text-lg font-semibold">Static data</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            WordPress trail posts are imported into JSON metadata and GeoJSON
-            route overlays under public/data.
-          </p>
-        </div>
-        <div className="rounded-md border border-line bg-white p-5">
-          <Layers className="size-5 text-sun" aria-hidden="true" />
-          <h2 className="mt-4 text-lg font-semibold">Layer controls</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            Search, filter categories, toggle routes or trail points, and open
-            the original trail posts.
-          </p>
-        </div>
-        <div className="min-h-[360px] rounded-md border border-line bg-[linear-gradient(135deg,#e7f1ef_0%,#f7faf9_45%,#dbe8ef_100%)] p-5 md:col-span-3">
-          <div className="grid h-full place-items-center rounded-md border border-dashed border-slate-300 bg-white/55">
-            <div className="max-w-md text-center">
-              <p className="text-sm font-semibold text-forest">
-                Trail data pipeline
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Run npm run trails:sync to refresh the imported trail posts and
-                Waymark route overlays from the source website.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
   )
 }

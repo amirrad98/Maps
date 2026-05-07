@@ -1,0 +1,150 @@
+{
+  "source": "Freshwater Fisheries Society of BC 2025 B.C. Freshwater Fish Stocking Program Review",
+  "sourceUrl": "https://www.gofishbc.com/news/about-us/2025-bc-freshwater-fish-stocking-review/",
+  "secondarySources": [
+    {
+      "label": "GoFishBC Fish Stocking Reports",
+      "url": "https://www.gofishbc.com/stocked-fish"
+    },
+    {
+      "label": "B.C. Fisheries Inventory Data Queries",
+      "url": "https://www2.gov.bc.ca/gov/content/environment/plants-animals-ecosystems/fish/fish-and-fish-habitat-data-information/search-fish-fish-habitat-data-information/fisheries-inventory-data-queries"
+    }
+  ],
+  "year": 2025,
+  "provinceSummary": {
+    "fishStocked": 4940000,
+    "regionalFishTotal": 4947754,
+    "lakesStocked": 673,
+    "species": [
+      "Rainbow Trout",
+      "Kokanee",
+      "Eastern Brook Trout",
+      "Coastal Cutthroat Trout",
+      "Westslope Cutthroat Trout"
+    ]
+  },
+  "anadromousStocking": [
+    {
+      "region": "Lower Mainland",
+      "species": "Steelhead smolts",
+      "quantity": 225961,
+      "waterbodies": "six rivers"
+    },
+    {
+      "region": "Vancouver Island",
+      "species": "Steelhead smolts",
+      "quantity": 49940,
+      "waterbodies": "Somass River"
+    }
+  ],
+  "regions": [
+    {
+      "id": "region-1",
+      "regionNumber": "1",
+      "name": "Vancouver Island",
+      "center": [-124.45, 49.35],
+      "lakesStocked": 56,
+      "species": {
+        "Rainbow Trout": 145721,
+        "Kokanee": 6948,
+        "Coastal Cutthroat Trout": 10780
+      }
+    },
+    {
+      "id": "region-2",
+      "regionNumber": "2",
+      "name": "Lower Mainland",
+      "center": [-122.45, 49.25],
+      "lakesStocked": 39,
+      "species": {
+        "Rainbow Trout": 87352,
+        "Coastal Cutthroat Trout": 4400
+      }
+    },
+    {
+      "id": "region-3",
+      "regionNumber": "3",
+      "name": "Thompson-Nicola",
+      "center": [-120.55, 50.85],
+      "lakesStocked": 167,
+      "species": {
+        "Rainbow Trout": 742950,
+        "Kokanee": 194700,
+        "Eastern Brook Trout": 104750
+      }
+    },
+    {
+      "id": "region-4",
+      "regionNumber": "4",
+      "name": "Kootenay",
+      "center": [-116.1, 49.65],
+      "lakesStocked": 106,
+      "species": {
+        "Rainbow Trout": 228134,
+        "Kokanee": 137700,
+        "Eastern Brook Trout": 14250,
+        "Westslope Cutthroat Trout": 71781
+      }
+    },
+    {
+      "id": "region-5",
+      "regionNumber": "5",
+      "name": "Cariboo",
+      "center": [-122.1, 52.35],
+      "lakesStocked": 97,
+      "species": {
+        "Rainbow Trout": 1210875,
+        "Kokanee": 1007639,
+        "Eastern Brook Trout": 50500
+      }
+    },
+    {
+      "id": "region-6",
+      "regionNumber": "6",
+      "name": "Skeena",
+      "center": [-128.55, 55.15],
+      "lakesStocked": 16,
+      "species": {
+        "Rainbow Trout": 51000,
+        "Kokanee": 4300,
+        "Eastern Brook Trout": 19000
+      }
+    },
+    {
+      "id": "region-7a",
+      "regionNumber": "7A",
+      "name": "Omineca",
+      "center": [-124.55, 54.25],
+      "lakesStocked": 48,
+      "species": {
+        "Rainbow Trout": 201500,
+        "Kokanee": 85800,
+        "Eastern Brook Trout": 53250
+      }
+    },
+    {
+      "id": "region-7b",
+      "regionNumber": "7B",
+      "name": "Peace",
+      "center": [-121.25, 56.2],
+      "lakesStocked": 12,
+      "species": {
+        "Rainbow Trout": 24700,
+        "Eastern Brook Trout": 12000
+      }
+    },
+    {
+      "id": "region-8",
+      "regionNumber": "8",
+      "name": "Okanagan",
+      "center": [-119.55, 49.85],
+      "lakesStocked": 120,
+      "species": {
+        "Rainbow Trout": 437974,
+        "Kokanee": 12800,
+        "Eastern Brook Trout": 26950
+      }
+    }
+  ]
+}

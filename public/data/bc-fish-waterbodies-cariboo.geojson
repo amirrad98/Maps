@@ -1,0 +1,1664 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "source": "BC Geographical Names Web Service",
+    "sourceUrl": "https://apps.gov.bc.ca/pub/bcgnws/",
+    "generatedAt": "2026-05-02T00:13:26.832Z",
+    "regionId": "region-5",
+    "regionName": "Cariboo",
+    "checkedWaterbodies": 106,
+    "matchedWaterbodies": 75
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "DRAGON",
+        "nearestTown": "QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Dragon Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/14820",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.42333333333333,
+          52.95
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "HOWES",
+        "nearestTown": "MCLEESE LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Howes Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/14855",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.13361111111112,
+          52.38333333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "CHIMNEY",
+        "nearestTown": "WILLIAMS LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Chimney Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/36179",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.94472222222223,
+          51.90861111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "GREENY",
+        "nearestTown": "NW OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Greeny Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28969",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.34694444444445,
+          51.85138888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "MCLEESE",
+        "nearestTown": "MCLEESE LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "McLeese Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/20573",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.29638888888888,
+          52.40861111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "LITTLE BIG BAR",
+        "nearestTown": "CLINTON",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Little Big Bar Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28856",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.91027777777778,
+          51.35277777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "BRIDGE",
+        "nearestTown": "BRIDGE LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Bridge Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28716",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.73583333333333,
+          51.50666666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "DEKA",
+        "nearestTown": "100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Deka Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/29911",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.78305555555555,
+          51.64972222222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "LAC LA HACHE",
+        "nearestTown": "LAC LA HACHE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Lac la Hache",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/40615",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.56305555555555,
+          51.82805555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "HELENA",
+        "nearestTown": "LAC LA HACHE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Helena Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/29280",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.64222222222223,
+          51.79083333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "ELK",
+        "nearestTown": "MCLEESE LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Elk Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/9459",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.05805555555555,
+          52.47138888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "FAWN",
+        "nearestTown": "SHERIDAN",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Fawn Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28324",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.98166666666667,
+          51.551944444444445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "SULPHUROUS",
+        "nearestTown": "SHERIDAN",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Sulphurous Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/31697",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.83166666666666,
+          51.63
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "HATHAWAY",
+        "nearestTown": "E OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Hathaway Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/29153",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.83361111111111,
+          51.65694444444444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "RUTH",
+        "nearestTown": "FOREST GROVE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Ruth Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/31096",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.05472222222222,
+          51.82333333333334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "MCINTYRE",
+        "nearestTown": "SW OF WILLIAMS LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "McIntyre Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/30221",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.34833333333333,
+          51.973333333333336
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "TILL",
+        "nearestTown": "SW OF WILLIAMS LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Till Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/19107",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.36333333333333,
+          52.035
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "FELKER",
+        "nearestTown": "WILLIAMS LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Felker Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28327",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.00166666666667,
+          51.950833333333335
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "SHERIDAN",
+        "nearestTown": "SHERIDAN LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Sheridan Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/30805",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.89500000000001,
+          51.51916666666666
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "KELLY",
+        "nearestTown": "CLINTON",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Kelly Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/37810",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.78055555555555,
+          51.00416666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "WATCH",
+        "nearestTown": "70 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Watch Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/31297",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.10472222222222,
+          51.461111111111116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "MILBURN",
+        "nearestTown": "BOUCHIE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Milburn Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/23592",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.68027777777779,
+          53.022777777777776
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "HEN INGRAM",
+        "nearestTown": "NE OF HORSEFLY",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Hen Ingram Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/35865",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.00777777777778,
+          52.45916666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "TEN MILE",
+        "nearestTown": "N OF QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Ten Mile Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/15024",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.45444444444445,
+          53.080555555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "RAVEN",
+        "nearestTown": "RISKE RIVER",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Raven Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/23347",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.87833333333333,
+          52.03805555555555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "DUGAN",
+        "nearestTown": "150 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Dugan Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/15583",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.90472222222223,
+          52.169999999999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "TIMOTHY",
+        "nearestTown": "LAC LA HACHE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Timothy Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/31262",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.26388888888889,
+          51.85333333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "EDMUND",
+        "nearestTown": "SW OF 100 MILE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Edmund Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28089",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.39861111111112,
+          51.59861111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "SNAG",
+        "nearestTown": "W OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Snag Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/31172",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.74333333333334,
+          51.65361111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "BOBBS",
+        "nearestTown": "NE OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Bobbs Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/185",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.9625,
+          51.80583333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "VALENTINE",
+        "nearestTown": "100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Valentine Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/31024",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.45055555555555,
+          51.58527777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "OWEN",
+        "nearestTown": "SW OF MCLEESE LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Owen Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/15151",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.91416666666667,
+          52.25805555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "ROSE",
+        "nearestTown": "150 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Rose Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/21814",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.76583333333333,
+          52.24277777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "SKULOW",
+        "nearestTown": "150 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Skulow Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/21532",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.9,
+          52.308611111111105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "PUNTCHESAKUT",
+        "nearestTown": "W OF QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Puntchesakut Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/21340",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.94666666666667,
+          52.97638888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "FISHPOT",
+        "nearestTown": "W OF QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Fishpot Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/12811",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.78361111111111,
+          52.95055555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "MARMOT",
+        "nearestTown": "W OF QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Marmot Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/5624",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.56694444444445,
+          52.92305555555555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "BOUCHIE",
+        "nearestTown": "QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Bouchie Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/403",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.62638888888888,
+          53.035555555555554
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "PYPER",
+        "nearestTown": "CHILANKO FORKS",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Pyper Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/21387",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -124.17694444444444,
+          52.04277777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "COOK",
+        "nearestTown": "SE OF BIG LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Cook Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/54394",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.78,
+          52.350833333333334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "RIMROCK",
+        "nearestTown": "N OF MCLEESE LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Rimrock Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/22263",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.32277777777777,
+          52.48277777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "CUISSON",
+        "nearestTown": "MCLEESE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Cuisson Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/35227",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.31138888888889,
+          52.48111111111111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "YIMPAKLUK",
+        "nearestTown": "NW OF QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Yimpakluk Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/25275",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.74444444444444,
+          53.27166666666667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "FRENCH",
+        "nearestTown": "N OF BRIDGE LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "French Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28531",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.76361111111112,
+          51.59277777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "HUSH",
+        "nearestTown": "QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Hush Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/15686",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.36027777777777,
+          53.15222222222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "NOLAN",
+        "nearestTown": "70 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Nolan Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/30076",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.13777777777779,
+          51.41722222222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "RAIL",
+        "nearestTown": "LAC LA HACHE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Rail Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/30529",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.47305555555556,
+          51.94555555555555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "LOWER",
+        "nearestTown": "100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Lower Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/29639",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.17333333333333,
+          51.75388888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "GREENLEE",
+        "nearestTown": "EAGLE CREEK",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Greenlee Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28964",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.88583333333334,
+          51.84055555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "MACKILL",
+        "nearestTown": "N OF ALEXIS CREEK",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Mackill Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/39194",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.30277777777778,
+          52.32805555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "SIMON",
+        "nearestTown": "N OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Simon Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/30840",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.24416666666667,
+          51.72638888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "DONNELY",
+        "nearestTown": "100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Donnely Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/27746",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.67277777777778,
+          51.755833333333335
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "PALMER",
+        "nearestTown": "E OF CHILKO LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Palmer Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/15244",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.25277777777778,
+          52.35305555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "KESTREL",
+        "nearestTown": "N OF WILLIAMS LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Kestrel Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/54968",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.1463888888889,
+          52.437777777777775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "BIG ONION",
+        "nearestTown": "N OF TASEKO LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Big Onion Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/22741",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.63333333333334,
+          51.407777777777774
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "ABBOTT",
+        "nearestTown": "HORSEFLY",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Abbott Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/125",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.50111111111111,
+          52.324444444444445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "JIM",
+        "nearestTown": "S OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Jim Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/27885",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.11666666666666,
+          51.400555555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "108 MILE",
+        "nearestTown": "100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "108 Mile Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/40754",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.36194444444443,
+          51.74194444444444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "IRISH",
+        "nearestTown": "100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Irish Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/29567",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.17055555555557,
+          51.54805555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "BELLOS",
+        "nearestTown": "NE OF QUESNEL",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Bellos Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/3368",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.30777777777777,
+          53.11555555555556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "DORSEY",
+        "nearestTown": "NE OF WILLIAMS LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Dorsey Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/14762",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.79777777777778,
+          52.45638888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "KLINNE",
+        "nearestTown": "NE OF HORSEFLY",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Klinne Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/5443",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.1261111111111,
+          52.51277777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "LORIN",
+        "nearestTown": "E OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Lorin Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/29621",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.62583333333333,
+          51.73722222222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "EARLE",
+        "nearestTown": "100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Earle Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/27996",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.095,
+          51.62722222222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "WHALE",
+        "nearestTown": "W OF 93 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Whale Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/31501",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.57277777777777,
+          51.90888888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "BOAR",
+        "nearestTown": "W OF 93 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Boar Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/37557",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.65194444444445,
+          51.53638888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "HORN",
+        "nearestTown": "S OF TATLA LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Horn Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/29361",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -124.69722222222222,
+          51.80972222222222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "TWO",
+        "nearestTown": "NW OF ALEXIS CREEK",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Two Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/25049",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.54722222222222,
+          52.282777777777774
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "FAULKNER",
+        "nearestTown": "NE OF BRIDGE LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Faulkner Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28323",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.6061111111111,
+          51.53527777777778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "HOWARD",
+        "nearestTown": "E OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Howard Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/29377",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.79083333333332,
+          51.8125
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "DEWAR",
+        "nearestTown": "150 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Dewar Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/14592",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.86583333333333,
+          52.19583333333333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "SLIM",
+        "nearestTown": "N OF TASEKO LAKES",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Slim Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/22398",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.40916666666668,
+          53.74638888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "SCHOOLHOUSE",
+        "nearestTown": "NW OF 100 MILE HOUSE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Schoolhouse Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/30379",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.97777777777777,
+          51.855555555555554
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "WHALE",
+        "nearestTown": "NE OF CANIM LAKE",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Whale Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/31501",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.57277777777777,
+          51.90888888888889
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "waterbodyName": "BIG BAR",
+        "nearestTown": "CLINTON",
+        "waterbodyType": "lake",
+        "regionId": "region-5",
+        "regionName": "Cariboo",
+        "reportRegion": "CARIBOO",
+        "bcgnwsName": "Big Bar Lake",
+        "bcgnwsUri": "apps.gov.bc.ca/pub/bcgnws/names/28618",
+        "featureType": "Lake",
+        "matchConfidence": "high"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.79861111111111,
+          51.31027777777778
+        ]
+      }
+    }
+  ]
+}

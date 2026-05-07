@@ -15,6 +15,17 @@ Tailwind CSS, React Router, and Playwright.
 Static data files live in `public/data` and can be fetched from the app with
 paths such as `/data/sample-points.geojson`.
 
+Trail data currently comes from two static files:
+
+- `public/data/pg-trails.json` and `public/data/pg-trails.geojson` are generated
+  from the public Prince George hiking WordPress site with `npm run trails:sync`.
+- `public/data/alltrails.json` is an optional normalized AllTrails export. Put
+  authorized AllTrails search response JSON files in `imports/alltrails/`, then
+  run `npm run alltrails:import` to rebuild the static file.
+
+The app does not store AllTrails session cookies or automate protected browser
+requests. It only consumes static JSON exports that you are allowed to use.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

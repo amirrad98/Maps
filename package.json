@@ -11,6 +11,9 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"tests/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"tests/**/*.ts\"",
     "trails:sync": "node scripts/build-trails.mjs",
+    "alltrails:import": "node scripts/import-alltrails.mjs",
+    "fish:import-waterbodies": "node scripts/import-fish-waterbodies.mjs",
+    "fish:enrich-waterbodies": "node scripts/enrich-fish-waterbodies.mjs",
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed"
   },

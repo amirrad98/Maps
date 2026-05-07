@@ -1,0 +1,50 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": "region-1", "regionNumber": "1", "name": "Vancouver Island", "lakesStocked": 56, "totalFish": 163449, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-124.45, 49.35] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "region-2", "regionNumber": "2", "name": "Lower Mainland", "lakesStocked": 39, "totalFish": 91752, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-122.45, 49.25] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "region-3", "regionNumber": "3", "name": "Thompson-Nicola", "lakesStocked": 167, "totalFish": 1042400, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-120.55, 50.85] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "region-4", "regionNumber": "4", "name": "Kootenay", "lakesStocked": 106, "totalFish": 451865, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-116.1, 49.65] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "region-5", "regionNumber": "5", "name": "Cariboo", "lakesStocked": 97, "totalFish": 2269014, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-122.1, 52.35] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "region-6", "regionNumber": "6", "name": "Skeena", "lakesStocked": 16, "totalFish": 74300, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-128.55, 55.15] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "region-7a", "regionNumber": "7A", "name": "Omineca", "lakesStocked": 48, "totalFish": 340550, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-124.55, 54.25] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "region-7b", "regionNumber": "7B", "name": "Peace", "lakesStocked": 12, "totalFish": 36700, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-121.25, 56.2] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "region-8", "regionNumber": "8", "name": "Okanagan", "lakesStocked": 120, "totalFish": 477724, "topSpecies": "Rainbow Trout" },
+      "geometry": { "type": "Point", "coordinates": [-119.55, 49.85] }
+    }
+  ]
+}

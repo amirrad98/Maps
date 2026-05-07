@@ -24,6 +24,19 @@ export function Navbar() {
                   : 'text-slate-600 hover:bg-field hover:text-ink',
               ].join(' ')
             }
+            to="/fish"
+          >
+            Fish
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              [
+                'rounded-md px-3 py-2 text-sm font-medium transition',
+                isActive
+                  ? 'bg-field text-ink'
+                  : 'text-slate-600 hover:bg-field hover:text-ink',
+              ].join(' ')
+            }
             to="/explorer"
           >
             Explorer
