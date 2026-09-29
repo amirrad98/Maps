@@ -1,6 +1,6 @@
 import maplibregl from 'maplibre-gl'
 import type { LngLatLike, Map, StyleSpecification } from 'maplibre-gl'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react'
 import { cn } from '../../lib/utils'
 
 const DEFAULT_STYLE: StyleSpecification = {
@@ -37,6 +37,7 @@ type MapCanvasProps = {
   className?: string
   styleUrl?: string | StyleSpecification
   onMapReady?: (map: Map) => void
+  ref?: Ref<HTMLDivElement>
 }
 
 export function MapCanvas({
@@ -46,6 +47,7 @@ export function MapCanvas({
   className,
   styleUrl = DEFAULT_STYLE,
   onMapReady,
+  ref,
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<Map | null>(null)
@@ -93,10 +95,11 @@ export function MapCanvas({
   return (
     <div
       className={cn(
-        'relative h-full min-h-[520px] overflow-hidden rounded-md bg-slate-200',
+        'relative overflow-hidden rounded-md bg-slate-200',
         className,
       )}
       data-testid="map-canvas"
+      ref={ref}
     >
       <div ref={containerRef} className="absolute inset-0" />
       {!isReady && (

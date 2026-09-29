@@ -159,8 +159,6 @@ await writeFile(
       count: trails.length,
       trails,
     },
-    null,
-    2,
   )}\n`,
 )
 

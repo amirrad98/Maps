@@ -10,8 +10,7 @@ const mapCards = [
     href: '/explorer',
     icon: Mountain,
     tint: 'bg-emerald-50 text-forest',
-    image:
-      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee',
     stats: ['290 trails', '94 route maps', 'BC coverage'],
   },
   {
@@ -22,8 +21,7 @@ const mapCards = [
     href: '/fish',
     icon: Fish,
     tint: 'bg-cyan-50 text-water',
-    image:
-      'https://images.unsplash.com/photo-1688656116639-106f7bcd66d4?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1688656116639-106f7bcd66d4',
     stats: ['4.94M fish', '673 lakes', '2025 review'],
   },
   {
@@ -33,8 +31,7 @@ const mapCards = [
     status: 'Planned',
     icon: Building2,
     tint: 'bg-sky-50 text-water',
-    image:
-      'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742',
     stats: ['Facilities', 'Parks', 'Boundaries'],
   },
   {
@@ -44,8 +41,7 @@ const mapCards = [
     status: 'Planned',
     icon: Car,
     tint: 'bg-amber-50 text-sun',
-    image:
-      'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429',
     stats: ['Trailheads', 'Access notes', 'EV stops'],
   },
   {
@@ -55,15 +51,18 @@ const mapCards = [
     status: 'Planned',
     icon: Bike,
     tint: 'bg-slate-100 text-ink',
-    image:
-      'https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1501555088652-021faa106b9b',
     stats: ['Activities', 'Features', 'Seasons'],
   },
 ]
 
+function getImageUrl(image: string, width: number) {
+  return `${image}?auto=format&fit=crop&w=${width}&q=75`
+}
+
 export function Home() {
   return (
-    <main className="mx-auto min-h-[calc(100vh-56px)] max-w-7xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
       <section>
         <div className="mb-4 flex items-center justify-between gap-4">
           <div>
@@ -73,7 +72,7 @@ export function Home() {
           <Trees className="size-6 text-forest" aria-hidden="true" />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {mapCards.map((map) => {
             const Icon = map.icon
             const content = (
@@ -82,7 +81,17 @@ export function Home() {
                   <img
                     alt=""
                     className="size-full object-cover transition duration-300 group-hover:scale-105"
-                    src={map.image}
+                    decoding="async"
+                    height={144}
+                    loading="lazy"
+                    sizes="(min-width: 1280px) 300px, (min-width: 768px) 50vw, 100vw"
+                    src={getImageUrl(map.image, 800)}
+                    srcSet={[480, 800, 1200]
+                      .map(
+                        (width) => `${getImageUrl(map.image, width)} ${width}w`,
+                      )
+                      .join(', ')}
+                    width={400}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/55 to-transparent" />
                   <span className="absolute left-3 top-3 rounded-full bg-white/92 px-2.5 py-1 text-xs font-semibold text-ink">
@@ -138,6 +147,6 @@ export function Home() {
           })}
         </div>
       </section>
-    </main>
+    </div>
   )
 }

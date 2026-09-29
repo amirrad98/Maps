@@ -1,5 +1,6 @@
 import { writeFile, mkdir } from 'node:fs/promises'
 import * as turf from '@turf/turf'
+import { compactTrailGeoJson } from './lib/compact-geojson.mjs'
 
 const API_ROOT = 'https://hiking.princegeorge.tech/wp-json/wp/v2'
 const SITE_ROOT = 'https://hiking.princegeorge.tech'
@@ -303,11 +304,12 @@ await writeFile(
       routeCount: trails.filter((trail) => trail.hasRoute).length,
       trails: trailMetadata,
     },
-    null,
-    2,
   )}\n`,
 )
-await writeFile('public/data/pg-trails.geojson', `${JSON.stringify(geoJson, null, 2)}\n`)
+await writeFile(
+  'public/data/pg-trails.geojson',
+  `${JSON.stringify(compactTrailGeoJson(geoJson))}\n`,
+)
 
 console.log(
   `Wrote ${trails.length} trails, ${trails.filter((trail) => trail.hasRoute).length} with route geometry, ${geoJson.features.length} GeoJSON features.`,

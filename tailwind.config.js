@@ -17,4 +17,8 @@ export default {
     },
   },
   plugins: [],
+  future: {
+    // Avoid sticky hover styles after taps on touch devices.
+    hoverOnlyWhenSupported: true,
+  },
 }

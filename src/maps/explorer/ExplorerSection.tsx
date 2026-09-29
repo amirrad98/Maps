@@ -1,4 +1,3 @@
-import * as turf from '@turf/turf'
 import type { FeatureCollection, Geometry } from 'geojson'
 import type {
   ExpressionSpecification,
@@ -26,6 +25,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '../../components/ui/Button'
 import { MapCanvas } from '../../components/ui/MapCanvas'
+import { getMapPadding, revealMapOnStackedLayout } from '../../lib/viewport'
 
 const PRINCE_GEORGE_CENTER: [number, number] = [-122.7497, 53.9171]
 const SOURCE_ID = 'pg-trails'
@@ -35,6 +35,7 @@ const POINT_LAYER_ID = 'pg-trail-points'
 const SELECTED_POINT_LAYER_ID = 'pg-trail-points-selected'
 const LABEL_LAYER_ID = 'pg-trail-labels'
 const EMPTY_TRAILS: Trail[] = []
+const EMPTY_ROUTE_FEATURES: TrailFeatureCollection['features'] = []
 const ROUTE_FILTER = [
   'in',
   ['geometry-type'],
@@ -363,22 +364,28 @@ function normalizeSearch(value: string) {
 }
 
 function getTrailBounds(trails: Trail[]) {
-  const coordinates = trails
-    .map((trail) => trail.center)
-    .filter((center): center is [number, number] => Boolean(center))
+  let bounds: [number, number, number, number] | null = null
 
-  if (!coordinates.length) return null
+  for (const trail of trails) {
+    if (!trail.center) continue
+    const [lng, lat] = trail.center
 
-  const bounds = turf.bbox(
-    turf.featureCollection(coordinates.map((center) => turf.point(center))),
-  )
-  return bounds as [number, number, number, number]
+    bounds = bounds
+      ? [
+          Math.min(bounds[0], lng),
+          Math.min(bounds[1], lat),
+          Math.max(bounds[2], lng),
+          Math.max(bounds[3], lat),
+        ]
+      : [lng, lat, lng, lat]
+  }
+
+  return bounds
 }
 
 export function ExplorerSection() {
   const [trailData, setTrailData] = useState<TrailData | null>(null)
-  const [trailGeoJson, setTrailGeoJson] =
-    useState<TrailFeatureCollection | null>(null)
+  const [routeFeatures, setRouteFeatures] = useState(EMPTY_ROUTE_FEATURES)
   const [mapInstance, setMapInstance] = useState<MapLibreMap | null>(null)
   const [showRoutes, setShowRoutes] = useState(true)
   const [showPoints, setShowPoints] = useState(true)
@@ -387,21 +394,19 @@ export function ExplorerSection() {
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [selectedTrailId, setSelectedTrailId] = useState<number | null>(null)
   const hasFitInitialTrails = useRef(false)
+  const mapRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
+    let cancelled = false
+
+    // Trail metadata is small, so the list and trail points render right away
+    // while the heavier route geometry streams in separately.
     Promise.all([
       fetch(`${import.meta.env.BASE_URL}data/pg-trails.json`).then(
         (response) => {
           if (!response.ok)
             throw new Error(`Unable to load trail metadata: ${response.status}`)
           return response.json() as Promise<TrailData>
-        },
-      ),
-      fetch(`${import.meta.env.BASE_URL}data/pg-trails.geojson`).then(
-        (response) => {
-          if (!response.ok)
-            throw new Error(`Unable to load trail geometry: ${response.status}`)
-          return response.json() as Promise<TrailFeatureCollection>
         },
       ),
       fetch(`${import.meta.env.BASE_URL}data/alltrails.json`)
@@ -411,7 +416,9 @@ export function ExplorerSection() {
         })
         .catch(() => null),
     ])
-      .then(([metadata, geoJson, alltrailsData]) => {
+      .then(([metadata, alltrailsData]) => {
+        if (cancelled) return
+
         const alltrailsRecords =
           alltrailsData?.trails ?? alltrailsData?.searchResults ?? []
         const atTrails = alltrailsData
@@ -425,34 +432,11 @@ export function ExplorerSection() {
           : []
         const merged = mergeAndDeduplicate(metadata.trails, atTrails)
 
-        const atFeatures = merged
-          .filter((t) => t.source === 'alltrails' && !t.hidden && t.center)
-          .map((t) => ({
-            type: 'Feature' as const,
-            properties: {
-              trailId: t.id,
-              trailSlug: t.slug,
-              trailTitle: t.title,
-              kind: 'trail-center',
-              source: 'alltrails',
-            },
-            geometry: {
-              type: 'Point' as const,
-              coordinates: t.center!,
-            },
-          }))
-
-        const enrichedGeoJson: TrailFeatureCollection = {
-          ...geoJson,
-          features: [...geoJson.features, ...atFeatures],
-        }
-
         setTrailData({
           ...metadata,
           count: merged.filter((t) => !t.hidden).length,
           trails: merged,
         })
-        setTrailGeoJson(enrichedGeoJson)
         setSelectedTrailId(
           merged.find((trail) => trail.center && !trail.hidden)?.id ?? null,
         )
@@ -460,6 +444,29 @@ export function ExplorerSection() {
       .catch((error: unknown) => {
         console.error(error)
       })
+
+    fetch(`${import.meta.env.BASE_URL}data/pg-trails.geojson`)
+      .then((response) => {
+        if (!response.ok)
+          throw new Error(`Unable to load trail geometry: ${response.status}`)
+        return response.json() as Promise<TrailFeatureCollection>
+      })
+      .then((geoJson) => {
+        if (cancelled) return
+        // Trail centers are built from the metadata instead.
+        setRouteFeatures(
+          geoJson.features.filter(
+            (feature) => feature.properties?.kind !== 'trail-center',
+          ),
+        )
+      })
+      .catch((error: unknown) => {
+        console.error(error)
+      })
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const trails = trailData?.trails ?? EMPTY_TRAILS
@@ -469,6 +476,32 @@ export function ExplorerSection() {
   )
   const selectedTrail =
     trails.find((trail) => trail.id === selectedTrailId) ?? null
+
+  const trailGeoJson = useMemo<TrailFeatureCollection | null>(() => {
+    if (!trailData) return null
+
+    const centerFeatures = visibleTrails
+      .filter((trail) => trail.center)
+      .map((trail) => ({
+        type: 'Feature' as const,
+        properties: {
+          trailId: trail.id,
+          trailSlug: trail.slug,
+          trailTitle: trail.title,
+          kind: 'trail-center',
+          source: trail.source,
+        },
+        geometry: {
+          type: 'Point' as const,
+          coordinates: trail.center!,
+        },
+      }))
+
+    return {
+      type: 'FeatureCollection',
+      features: [...routeFeatures, ...centerFeatures],
+    }
+  }, [routeFeatures, trailData, visibleTrails])
 
   const categoryGroups = useMemo(() => {
     const counts = new Map<string, number>()
@@ -569,7 +602,7 @@ export function ExplorerSection() {
           id: SELECTED_ROUTE_LAYER_ID,
           type: 'line',
           source: SOURCE_ID,
-          filter: getTrailFeatureFilter(selectedTrailId),
+          filter: getTrailFeatureFilter(null),
           paint: {
             'line-color': '#111827',
             'line-width': [
@@ -624,7 +657,7 @@ export function ExplorerSection() {
           id: SELECTED_POINT_LAYER_ID,
           type: 'circle',
           source: SOURCE_ID,
-          filter: getTrailFeatureFilter(selectedTrailId),
+          filter: getTrailFeatureFilter(null),
           paint: {
             'circle-color': '#f59e0b',
             'circle-radius': [
@@ -665,14 +698,8 @@ export function ExplorerSection() {
           },
         })
       }
-
-      setLayerVisibility(map, ROUTE_LAYER_ID, showRoutes)
-      setLayerVisibility(map, SELECTED_ROUTE_LAYER_ID, showRoutes)
-      setLayerVisibility(map, POINT_LAYER_ID, showPoints)
-      setLayerVisibility(map, SELECTED_POINT_LAYER_ID, showPoints)
-      setLayerVisibility(map, LABEL_LAYER_ID, showPoints)
     },
-    [selectedTrailId, showPoints, showRoutes, trailGeoJson],
+    [trailGeoJson],
   )
 
   useEffect(() => {
@@ -688,7 +715,7 @@ export function ExplorerSection() {
     setLayerVisibility(mapInstance, POINT_LAYER_ID, showPoints)
     setLayerVisibility(mapInstance, SELECTED_POINT_LAYER_ID, showPoints)
     setLayerVisibility(mapInstance, LABEL_LAYER_ID, showPoints)
-  }, [mapInstance, showPoints, showRoutes])
+  }, [mapInstance, showPoints, showRoutes, trailGeoJson])
 
   useEffect(() => {
     if (!mapInstance) return
@@ -706,7 +733,7 @@ export function ExplorerSection() {
         getTrailFeatureFilter(selectedTrailId),
       )
     }
-  }, [mapInstance, selectedTrailId])
+  }, [mapInstance, selectedTrailId, trailGeoJson])
 
   const fitVisibleTrails = useCallback(() => {
     if (!mapInstance) return
@@ -720,11 +747,12 @@ export function ExplorerSection() {
         [bounds[2], bounds[3]],
       ],
       {
-        padding: 80,
+        padding: getMapPadding(mapInstance, 80),
         maxZoom: 8,
         duration: 700,
       },
     )
+    revealMapOnStackedLayout(mapRef.current)
   }, [filteredTrails, mapInstance])
 
   const focusTrail = useCallback(
@@ -790,7 +818,7 @@ export function ExplorerSection() {
         [bounds[2], bounds[3]],
       ],
       {
-        padding: 80,
+        padding: getMapPadding(mapInstance, 80),
         maxZoom: 8,
         duration: 700,
       },
@@ -799,8 +827,8 @@ export function ExplorerSection() {
   }, [mapInstance, trailData, visibleTrails])
 
   return (
-    <section className="mx-auto grid min-h-[calc(100vh-56px)] max-w-[1600px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[360px_minmax(0,1fr)_360px]">
-      <aside className="h-fit overflow-hidden rounded-md border border-line bg-white shadow-panel lg:sticky lg:top-4 lg:max-h-[calc(100vh-88px)]">
+    <section className="mx-auto grid max-w-[1600px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[340px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)_360px]">
+      <aside className="order-3 h-fit overflow-hidden rounded-md border border-line bg-white shadow-panel lg:order-none lg:flex lg:max-h-[calc(100dvh-88px)] lg:flex-col xl:sticky xl:top-4">
         <div className="border-b border-line p-4">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -815,20 +843,20 @@ export function ExplorerSection() {
               <Route className="size-5" aria-hidden="true" />
             </span>
           </div>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
+          <p className="mt-3 hidden text-sm leading-6 text-slate-600 sm:block">
             Imported from hiking.princegeorge.tech with route overlays, trail
             centers, source posts, photos, descriptions, and forecast links.
           </p>
         </div>
 
-        <div className="space-y-4 overflow-auto p-4 lg:max-h-[calc(100vh-272px)]">
+        <div className="space-y-4 overflow-auto p-4 lg:min-h-0 lg:flex-1">
           <section>
             <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink">
               <Search className="size-4 text-water" aria-hidden="true" />
               Search
             </div>
             <input
-              className="h-10 w-full rounded-md border border-line bg-white px-3 text-sm outline-none ring-water transition focus:ring-2"
+              className="h-11 w-full rounded-md border border-line bg-white px-3 text-base outline-none ring-water transition focus:ring-2 sm:h-10 sm:text-sm"
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder="Trail name, place, category"
               type="search"
@@ -1046,13 +1074,16 @@ export function ExplorerSection() {
 
       <MapCanvas
         center={PRINCE_GEORGE_CENTER}
-        className="h-[calc(100vh-88px)] min-h-[680px]"
+        className="order-1 h-[60svh] min-h-[320px] scroll-mt-4 lg:order-none lg:h-[calc(100dvh-88px)] lg:min-h-[560px]"
         onMapReady={setMapInstance}
+        ref={mapRef}
         zoom={7}
       />
 
-      <aside className="grid min-h-0 gap-4 lg:h-[calc(100vh-88px)] lg:grid-rows-[minmax(260px,1fr)_auto]">
-        <section className="min-h-0 overflow-hidden rounded-md border border-line bg-white shadow-panel">
+      {/* Below xl the two panels join the page grid directly so they can be
+          reordered around the map; at xl they share the right column. */}
+      <div className="contents xl:flex xl:h-[calc(100dvh-88px)] xl:min-h-[560px] xl:flex-col xl:gap-4">
+        <section className="order-4 flex min-h-0 flex-col overflow-hidden rounded-md border border-line bg-white shadow-panel lg:order-none xl:min-h-[240px] xl:flex-1">
           <div className="border-b border-line p-4">
             <p className="text-xs font-semibold uppercase text-forest">
               Results
@@ -1061,7 +1092,7 @@ export function ExplorerSection() {
               {filteredTrails.length.toLocaleString()} trails
             </h2>
           </div>
-          <div className="max-h-[420px] overflow-auto lg:max-h-none lg:h-[calc(100%-73px)]">
+          <div className="max-h-[420px] overflow-auto overscroll-contain xl:max-h-none xl:min-h-0 xl:flex-1">
             {filteredTrails.map((trail) => (
               <button
                 className={`block w-full border-b border-line px-4 py-3 text-left text-sm transition last:border-b-0 ${
@@ -1073,6 +1104,7 @@ export function ExplorerSection() {
                 onClick={() => {
                   setSelectedTrailId(trail.id)
                   focusTrail(trail)
+                  revealMapOnStackedLayout(mapRef.current)
                 }}
                 type="button"
               >
@@ -1116,18 +1148,18 @@ export function ExplorerSection() {
           </div>
         </section>
 
-        <section className="rounded-md border border-line bg-white shadow-panel">
+        <section className="order-2 rounded-md border border-line bg-white shadow-panel lg:order-none xl:max-h-[60%] xl:shrink-0 xl:overflow-auto xl:overscroll-contain">
           <div className="border-b border-line p-4">
             <p className="text-xs font-semibold uppercase text-forest">
               Selected trail
             </p>
-            <div className="mt-1 flex items-center gap-2">
-              <h2 className="text-lg font-bold text-ink">
+            <div className="mt-1 flex items-start gap-2">
+              <h2 className="min-w-0 break-words text-lg font-bold text-ink">
                 {selectedTrail?.title ?? 'Choose a trail'}
               </h2>
               {selectedTrail && (
                 <span
-                  className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none ${
+                  className={`mt-1.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none ${
                     selectedTrail.source === 'alltrails'
                       ? 'bg-emerald-100 text-emerald-700'
                       : 'bg-blue-100 text-blue-700'
@@ -1147,11 +1179,12 @@ export function ExplorerSection() {
                 <img
                   alt=""
                   className="h-36 w-full rounded-md object-cover"
+                  decoding="async"
                   loading="lazy"
                   src={selectedTrail.image}
                 />
               ) : (
-                <div className="grid h-28 place-items-center rounded-md bg-field text-slate-500">
+                <div className="hidden h-28 place-items-center rounded-md bg-field text-slate-500 sm:grid">
                   <ImageIcon className="size-5" aria-hidden="true" />
                 </div>
               )}
@@ -1162,7 +1195,7 @@ export function ExplorerSection() {
                   'No description available.'}
               </p>
 
-              <dl className="grid grid-cols-2 gap-2 text-sm">
+              <dl className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-3 xl:grid-cols-2">
                 <div className="rounded-md bg-field p-3">
                   <dt className="text-slate-500">Distance</dt>
                   <dd className="mt-1 font-semibold text-ink">
@@ -1250,7 +1283,7 @@ export function ExplorerSection() {
                   ))}
               </div>
 
-              <div className="grid gap-2">
+              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
                 <a
                   className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold text-white hover:opacity-90 ${
                     selectedTrail.source === 'alltrails'
@@ -1307,7 +1340,7 @@ export function ExplorerSection() {
             </p>
           )}
         </section>
-      </aside>
+      </div>
     </section>
   )
 }
