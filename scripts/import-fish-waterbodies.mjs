@@ -193,8 +193,6 @@ await writeFile(
       species,
       records,
     },
-    null,
-    2,
   )}\n`,
 )
 

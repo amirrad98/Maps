@@ -292,8 +292,6 @@ await writeFile(
       },
       features,
     },
-    null,
-    2,
   )}\n`,
 )
 

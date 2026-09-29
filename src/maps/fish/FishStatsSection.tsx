@@ -21,6 +21,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '../../components/ui/Button'
 import { MapCanvas } from '../../components/ui/MapCanvas'
+import { getMapPadding, revealMapOnStackedLayout } from '../../lib/viewport'
 
 const BC_CENTER: [number, number] = [-123.1, 53.3]
 const SOURCE_ID = 'bc-fish-stocking'
@@ -483,6 +484,7 @@ export function FishStatsSection() {
     Record<string, WeatherCacheEntry>
   >({})
   const pendingWeatherKeys = useRef(new Set<string>())
+  const mapAreaRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     Promise.all([
@@ -1263,10 +1265,11 @@ export function FishStatsSection() {
         [-114.0, 57.4],
       ],
       {
-        padding: 70,
+        padding: getMapPadding(mapInstance, 70),
         duration: 650,
       },
     )
+    revealMapOnStackedLayout(mapAreaRef.current)
   }, [mapInstance])
 
   const focusSelectedRegionWaterbodies = useCallback(() => {
@@ -1275,6 +1278,8 @@ export function FishStatsSection() {
     const regionFeatures = mappedFeatureCollection.features.filter(
       (feature) => feature.properties.regionId === selectedRegion.id,
     )
+
+    revealMapOnStackedLayout(mapAreaRef.current)
 
     if (!regionFeatures.length) {
       mapInstance.easeTo({
@@ -1298,7 +1303,7 @@ export function FishStatsSection() {
         [Math.max(...lngs), Math.max(...lats)],
       ],
       {
-        padding: 70,
+        padding: getMapPadding(mapInstance, 70),
         maxZoom: 7.6,
         duration: 650,
       },
@@ -1316,8 +1321,8 @@ export function FishStatsSection() {
     openPanels.details || Boolean(selectedWaterbodyDetail)
 
   return (
-    <section className="mx-auto grid min-h-[calc(100vh-56px)] max-w-[1600px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[390px_minmax(0,1fr)]">
-      <aside className="h-fit overflow-hidden rounded-md border border-line bg-white shadow-panel lg:sticky lg:top-4 lg:flex lg:max-h-[calc(100vh-88px)] lg:flex-col">
+    <section className="mx-auto grid max-w-[1600px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[390px_minmax(0,1fr)]">
+      <aside className="order-2 h-fit overflow-hidden rounded-md border border-line bg-white shadow-panel lg:sticky lg:top-4 lg:order-none lg:flex lg:max-h-[calc(100dvh-88px)] lg:flex-col">
         <div className="border-b border-line p-4">
           <p className="text-xs font-semibold uppercase text-forest">
             Fish stats
@@ -1410,7 +1415,7 @@ export function FishStatsSection() {
 
                   return (
                     <button
-                      className={`rounded-md border px-2 py-1.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
+                      className={`rounded-md border px-2 py-2 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-water sm:py-1.5 ${
                         active
                           ? 'border-forest bg-forest text-white'
                           : 'border-line bg-white text-ink hover:bg-field'
@@ -1437,7 +1442,7 @@ export function FishStatsSection() {
 
                   return (
                     <button
-                      className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
+                      className={`rounded-full border px-3 py-2 text-xs font-semibold sm:py-1.5 transition focus:outline-none focus:ring-2 focus:ring-water ${
                         active
                           ? 'border-forest bg-forest text-white'
                           : 'border-line bg-white text-ink hover:bg-field'
@@ -1465,7 +1470,7 @@ export function FishStatsSection() {
 
                     return (
                       <button
-                        className={`rounded-md border px-2 py-1.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-water ${
+                        className={`rounded-md border px-2 py-2 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-water sm:py-1.5 ${
                           active
                             ? 'border-forest bg-forest text-white'
                             : 'border-line bg-white text-ink hover:bg-field'
@@ -1528,7 +1533,7 @@ export function FishStatsSection() {
               </section>
             )}
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid gap-2 min-[400px]:grid-cols-2">
               <Button
                 className="w-full"
                 disabled={!mapInstance}
@@ -1595,6 +1600,7 @@ export function FishStatsSection() {
                         onClick={() => {
                           setSelectedRegionId(feature.properties.regionId)
                           setSelectedWaterbodyKey(feature.properties.key)
+                          revealMapOnStackedLayout(mapAreaRef.current)
                           mapInstance?.easeTo({
                             center: feature.geometry.coordinates as [
                               number,
@@ -1669,7 +1675,7 @@ export function FishStatsSection() {
                   </span>
                 </button>
                 {openPanels.regions && (
-                  <div className="max-h-72 overflow-auto border-t border-line">
+                  <div className="max-h-72 overflow-auto overscroll-contain border-t border-line">
                     {rankedRegions.map((region, index) => (
                       <button
                         className={`block w-full border-b border-line px-3 py-2.5 text-left text-sm transition last:border-b-0 ${
@@ -1681,6 +1687,7 @@ export function FishStatsSection() {
                         onClick={() => {
                           setSelectedRegionId(region.id)
                           setSelectedWaterbodyKey(null)
+                          revealMapOnStackedLayout(mapAreaRef.current)
                           mapInstance?.easeTo({
                             center: region.center,
                             zoom: Math.max(mapInstance.getZoom(), 6),
@@ -1831,7 +1838,7 @@ export function FishStatsSection() {
             {openPanels.waterbodies && (
               <div className="border-t border-line p-3">
                 <input
-                  className="h-9 w-full rounded-md border border-line bg-white px-3 text-sm outline-none ring-water transition focus:ring-2"
+                  className="h-11 w-full rounded-md border border-line bg-white px-3 text-base outline-none ring-water transition focus:ring-2 sm:h-9 sm:text-sm"
                   onChange={(event) => setWaterbodySearch(event.target.value)}
                   placeholder="Search waterbody or town"
                   type="search"
@@ -1843,7 +1850,7 @@ export function FishStatsSection() {
                     aria-hidden="true"
                   />
                   <select
-                    className="h-9 min-w-0 flex-1 rounded-md border border-line bg-white px-2 text-sm text-ink outline-none ring-water transition focus:ring-2"
+                    className="h-11 min-w-0 flex-1 rounded-md border border-line bg-white px-2 text-base text-ink outline-none ring-water transition focus:ring-2 sm:h-9 sm:text-sm"
                     onChange={(event) =>
                       setWaterbodySort(event.target.value as WaterbodySort)
                     }
@@ -1855,7 +1862,7 @@ export function FishStatsSection() {
                   </select>
                 </div>
                 <div
-                  className="mt-3 max-h-72 overflow-auto rounded-md border border-line"
+                  className="mt-3 max-h-72 overflow-auto overscroll-contain rounded-md border border-line"
                   data-testid="fish-waterbody-results"
                 >
                   {selectedWaterbodies.slice(0, 60).map((waterbody) => {
@@ -1872,6 +1879,7 @@ export function FishStatsSection() {
                         data-waterbody-key={waterbody.key}
                         onClick={() => {
                           setSelectedWaterbodyKey(waterbody.key)
+                          revealMapOnStackedLayout(mapAreaRef.current)
                           if (mappedFeature && mapInstance) {
                             mapInstance.easeTo({
                               center: mappedFeature.geometry.coordinates as [
@@ -1979,15 +1987,38 @@ export function FishStatsSection() {
         </div>
       </aside>
 
-      <MapCanvas
-        center={BC_CENTER}
-        className="h-[calc(100vh-88px)] min-h-[680px]"
-        onMapReady={setMapInstance}
-        zoom={4.4}
+      {/* On stacked layouts the waterbody card sits below the map instead of
+          covering it; from lg up it floats over the map's top-left corner. */}
+      <div
+        className="relative order-1 scroll-mt-4 lg:order-none"
+        ref={mapAreaRef}
       >
+        <MapCanvas
+          center={BC_CENTER}
+          className="h-[55svh] min-h-[320px] lg:h-[calc(100dvh-88px)] lg:min-h-[560px]"
+          onMapReady={setMapInstance}
+          zoom={4.4}
+        >
+          <div className="absolute bottom-9 right-2.5 max-w-[200px] rounded-md border border-line bg-white/95 p-2 text-[11px] shadow-panel sm:max-w-[240px] sm:p-3 sm:text-xs">
+            <div className="mb-1.5 font-semibold text-ink sm:mb-2">
+              Map layers
+            </div>
+            <div className="grid gap-1 text-slate-600 sm:gap-1.5">
+              <div className="flex items-center gap-2">
+                <span className="size-3 shrink-0 rounded-full bg-forest" />
+                Region totals
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="size-3 shrink-0 rounded-full bg-water" />
+                Lake / river stats at zoom 7+
+              </div>
+            </div>
+          </div>
+        </MapCanvas>
+
         {selectedWaterbodyDetail && (
           <div
-            className="absolute left-4 right-4 top-4 z-10 max-h-[calc(100%-2rem)] overflow-auto rounded-md border border-line bg-white/95 text-sm shadow-panel backdrop-blur sm:left-auto sm:w-[400px]"
+            className="mt-4 rounded-md border border-line bg-white text-sm shadow-panel lg:absolute lg:left-4 lg:top-4 lg:z-10 lg:mt-0 lg:max-h-[calc(100%-2rem)] lg:w-[380px] lg:overflow-auto lg:overscroll-contain lg:bg-white/95 lg:backdrop-blur"
             data-testid="selected-waterbody-map-card"
           >
             <div className="border-b border-line bg-white p-4">
@@ -1996,7 +2027,7 @@ export function FishStatsSection() {
                   <p className="text-xs font-semibold uppercase text-water">
                     Selected lake / river
                   </p>
-                  <h2 className="mt-1 truncate text-xl font-bold text-ink">
+                  <h2 className="mt-1 break-words text-xl font-bold text-ink">
                     {selectedWaterbodyDisplayName}
                   </h2>
                   <p className="mt-1 text-xs leading-5 text-slate-600">
@@ -2192,7 +2223,7 @@ export function FishStatsSection() {
 
               <div className="flex items-center gap-2">
                 <Button
-                  className="min-h-9 flex-1 px-3 text-xs"
+                  className="min-h-11 flex-1 px-3 text-xs sm:min-h-9"
                   onClick={() => setSelectedWaterbodyKey(null)}
                   variant="secondary"
                 >
@@ -2200,7 +2231,7 @@ export function FishStatsSection() {
                 </Button>
                 {selectedWaterbodyMappedFeature?.properties.bcgnwsUri && (
                   <a
-                    className="inline-flex min-h-9 items-center rounded-md border border-line px-3 text-xs font-semibold text-water hover:bg-field"
+                    className="inline-flex min-h-11 items-center rounded-md sm:min-h-9 border border-line px-3 text-xs font-semibold text-water hover:bg-field"
                     href={getBcgnwsUrl(
                       selectedWaterbodyMappedFeature.properties.bcgnwsUri,
                     )}
@@ -2214,21 +2245,7 @@ export function FishStatsSection() {
             </div>
           </div>
         )}
-
-        <div className="absolute bottom-4 right-4 max-w-[240px] rounded-md border border-line bg-white/95 p-3 text-xs shadow-panel">
-          <div className="mb-2 font-semibold text-ink">Map layers</div>
-          <div className="grid gap-1.5 text-slate-600">
-            <div className="flex items-center gap-2">
-              <span className="size-3 rounded-full bg-forest" />
-              Region totals
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="size-3 rounded-full bg-water" />
-              Lake / river stats at zoom 7+
-            </div>
-          </div>
-        </div>
-      </MapCanvas>
+      </div>
     </section>
   )
 }

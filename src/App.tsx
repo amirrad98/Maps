@@ -1,18 +1,39 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Shell } from './components/layout/Shell'
 import { Home } from './pages/Home'
-import { ExplorerSection } from './maps/explorer'
-import { FishStatsSection } from './maps/fish'
+
+// Map pages pull in MapLibre, so load them only when visited.
+const ExplorerSection = lazy(() =>
+  import('./maps/explorer').then((module) => ({
+    default: module.ExplorerSection,
+  })),
+)
+const FishStatsSection = lazy(() =>
+  import('./maps/fish').then((module) => ({
+    default: module.FishStatsSection,
+  })),
+)
+
+function PageFallback() {
+  return (
+    <div className="grid min-h-[calc(100dvh-56px)] place-items-center text-sm font-medium text-slate-600">
+      Loading map
+    </div>
+  )
+}
 
 function App() {
   return (
     <Shell>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/explorer" element={<ExplorerSection />} />
-        <Route path="/fish" element={<FishStatsSection />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={<PageFallback />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/explorer" element={<ExplorerSection />} />
+          <Route path="/fish" element={<FishStatsSection />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </Shell>
   )
 }
