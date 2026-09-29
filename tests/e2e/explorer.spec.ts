@@ -4,7 +4,7 @@ test('opens explorer and toggles the trail layers', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: /trail explorer/i }).click()
 
-  await expect(page).toHaveURL(/#\/explorer$/)
+  await expect(page).toHaveURL(/#\/explorer(\?.*)?$/)
   await expect(page.getByTestId('map-canvas')).toBeVisible()
   await expect(
     page.getByRole('heading', { name: /prince george hikes/i }),
@@ -38,7 +38,7 @@ test('opens fish stats map and filters species', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: /fish stats/i }).click()
 
-  await expect(page).toHaveURL(/#\/fish$/)
+  await expect(page).toHaveURL(/#\/fish(\?.*)?$/)
   await expect(page.getByTestId('map-canvas')).toBeVisible()
   await expect(
     page.getByRole('heading', { name: /bc stocking overview/i }),
@@ -103,4 +103,24 @@ test('opens fish stats map and filters species', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Kokanee', exact: true }).click()
   await expect(page.getByText(/selected lake \/ river/i)).not.toBeVisible()
+})
+
+test('switches basemap and keeps the map view in the URL', async ({ page }) => {
+  await page.goto('/#/explorer?lng=-122.75&lat=53.91&z=9')
+
+  const map = page.getByTestId('map-canvas')
+  await expect(
+    page.getByRole('button', { name: 'Change basemap' }),
+  ).toBeVisible()
+
+  await page.getByRole('button', { name: 'Change basemap' }).click()
+  await page.getByRole('menuitemradio', { name: 'Dark' }).click()
+  await expect(map).toHaveAttribute('data-basemap', 'dark')
+
+  // A pinned view is not replaced by the page's initial fit-to-trails.
+  await page.waitForTimeout(1000)
+  await expect(page).toHaveURL(/lng=-122\.75&lat=53\.91&z=9/)
+
+  await page.reload()
+  await expect(map).toHaveAttribute('data-basemap', 'dark')
 })

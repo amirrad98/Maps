@@ -8,7 +8,22 @@ Tailwind CSS, React Router, and Playwright.
 - `npm run dev` starts the local Vite server.
 - `npm run build` runs TypeScript and creates the production build.
 - `npm run lint` checks the project with ESLint.
+- `npm test` runs the Vitest unit tests.
 - `npm run e2e` runs the Playwright smoke test.
+
+## Maps
+
+`src/components/ui/MapCanvas.tsx` is the shared map used by every page:
+
+- Vector basemaps from CARTO's GL styles (Streets, Light and Dark), switched
+  in place from the layers button. Layers a page has added are carried across
+  a basemap swap, and the choice is remembered per browser. If a basemap style
+  can't be fetched, the map falls back to a plain background so data layers
+  still draw.
+- Themed controls: zoom, compass (reset north and pitch), find my location,
+  fullscreen and a metric scale bar.
+- The map view is kept in the URL (`#/explorer?lng=-122.75&lat=53.91&z=9`), so
+  any view can be bookmarked or shared.
 
 ## Data
 
