@@ -1075,7 +1075,11 @@ export function ExplorerSection() {
       <MapCanvas
         center={PRINCE_GEORGE_CENTER}
         className="order-1 h-[60svh] min-h-[320px] scroll-mt-4 lg:order-none lg:h-[calc(100dvh-88px)] lg:min-h-[560px]"
-        onMapReady={setMapInstance}
+        onMapReady={(map, { hasUrlView }) => {
+          // A shared link pins its own view; don't fit over it.
+          if (hasUrlView) hasFitInitialTrails.current = true
+          setMapInstance(map)
+        }}
         ref={mapRef}
         zoom={7}
       />

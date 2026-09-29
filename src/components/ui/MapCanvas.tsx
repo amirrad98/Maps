@@ -1,42 +1,59 @@
 import maplibregl from 'maplibre-gl'
-import type { LngLatLike, Map, StyleSpecification } from 'maplibre-gl'
-import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react'
+import type { Map, StyleSpecification } from 'maplibre-gl'
+import { Loader2 } from 'lucide-react'
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+  type Ref,
+} from 'react'
 import { cn } from '../../lib/utils'
+import { MapControls, MapScaleBar } from './map-controls'
+import {
+  BASEMAPS,
+  DEFAULT_BASEMAP,
+  FALLBACK_STYLE,
+  isBasemapId,
+  type BasemapId,
+} from './map-styles'
+import { useMapViewUrlState } from './map-url-state'
 
-const DEFAULT_STYLE: StyleSpecification = {
-  version: 8,
-  glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
-  sources: {
-    carto: {
-      type: 'raster',
-      tiles: [
-        'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-        'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-        'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-      ],
-      tileSize: 256,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    },
-  },
-  layers: [
-    {
-      id: 'carto-voyager',
-      type: 'raster',
-      source: 'carto',
-      minzoom: 0,
-      maxzoom: 20,
-    },
-  ],
+const BASEMAP_STORAGE_KEY = 'maps.basemap'
+
+function readStoredBasemap(): BasemapId {
+  try {
+    const stored = window.localStorage.getItem(BASEMAP_STORAGE_KEY)
+    return isBasemapId(stored) ? stored : DEFAULT_BASEMAP
+  } catch {
+    return DEFAULT_BASEMAP
+  }
+}
+
+function storeBasemap(basemap: BasemapId) {
+  try {
+    window.localStorage.setItem(BASEMAP_STORAGE_KEY, basemap)
+  } catch {
+    // Storage can be unavailable (private mode); the choice just won't stick.
+  }
+}
+
+export type MapReadyInfo = {
+  /** The URL pinned a view on load, so the page should skip its own auto-fit. */
+  hasUrlView: boolean
 }
 
 type MapCanvasProps = {
-  center: LngLatLike
+  /** Default center, used when the URL does not pin a view. */
+  center: [number, number]
+  /** Default zoom, used when the URL does not pin a view. */
   zoom: number
   children?: ReactNode
   className?: string
-  styleUrl?: string | StyleSpecification
-  onMapReady?: (map: Map) => void
+  /** Keep the view in the URL (`?lng&lat&z`) so it can be shared. Default true. */
+  persistView?: boolean
+  onMapReady?: (map: Map, info: MapReadyInfo) => void
   ref?: Ref<HTMLDivElement>
 }
 
@@ -45,52 +62,128 @@ export function MapCanvas({
   zoom,
   children,
   className,
-  styleUrl = DEFAULT_STYLE,
+  persistView = true,
   onMapReady,
   ref,
 }: MapCanvasProps) {
+  const [wrapper, setWrapper] = useState<HTMLDivElement | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const mapRef = useRef<Map | null>(null)
   const onMapReadyRef = useRef(onMapReady)
-  const [isReady, setIsReady] = useState(false)
+  const [map, setMap] = useState<Map | null>(null)
+  const [basemap, setBasemap] = useState<BasemapId>(readStoredBasemap)
+  const basemapRef = useRef(basemap)
+  // Source and layer ids that belong to the current basemap style, so a
+  // basemap swap can tell them apart from the data layers pages have added.
+  const basemapIdsRef = useRef<{ sources: Set<string>; layers: Set<string> }>({
+    sources: new Set(),
+    layers: new Set(),
+  })
+
+  const defaultView = useMemo(
+    () => ({ center, zoom }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [center[0], center[1], zoom],
+  )
+  const { initialView, hasUrlView, onViewChange } = useMapViewUrlState({
+    defaultView,
+  })
+  const onViewChangeRef = useRef(onViewChange)
+  const persistViewRef = useRef(persistView)
+  const initialRef = useRef({ view: initialView, hasUrlView })
 
   useEffect(() => {
     onMapReadyRef.current = onMapReady
-  }, [onMapReady])
+    onViewChangeRef.current = onViewChange
+    persistViewRef.current = persistView
+  }, [onMapReady, onViewChange, persistView])
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return
+    if (!containerRef.current) return
 
-    const map = new maplibregl.Map({
+    const { view, hasUrlView: pinned } = initialRef.current
+    const styleUrl = BASEMAPS[basemapRef.current].style
+    const instance = new maplibregl.Map({
       container: containerRef.current,
       style: styleUrl,
-      center,
-      zoom,
+      center: view.center,
+      zoom: view.zoom,
+      renderWorldCopies: false,
       attributionControl: { compact: true },
     })
 
-    map.addControl(
-      new maplibregl.NavigationControl({ visualizePitch: true }),
-      'top-right',
-    )
-    map.addControl(
-      new maplibregl.ScaleControl({ unit: 'metric' }),
-      'bottom-left',
-    )
+    let ready = false
+    let fellBack = false
 
-    map.on('load', () => {
-      setIsReady(true)
-      onMapReadyRef.current?.(map)
+    // Pages can add sources and layers as soon as the style is in, so signal
+    // ready on the first `style.load` rather than `load`, which also waits for
+    // every basemap tile in the first frame.
+    instance.on('style.load', () => {
+      if (ready) return
+      ready = true
+      // Nothing the page adds exists yet, so everything here is basemap.
+      const style = instance.getStyle()
+      basemapIdsRef.current = {
+        sources: new Set(Object.keys(style.sources)),
+        layers: new Set(style.layers.map((layer) => layer.id)),
+      }
+      setMap(instance)
+      onMapReadyRef.current?.(instance, { hasUrlView: pinned })
     })
 
-    mapRef.current = map
+    // If the basemap style itself can't be fetched the map never becomes
+    // ready; fall back to a plain background so page layers still work.
+    instance.on('error', (event) => {
+      if (ready || fellBack) return
+      const url = (event.error as { url?: string } | undefined)?.url
+      if (url && url !== styleUrl) return
+      fellBack = true
+      instance.setStyle(FALLBACK_STYLE)
+    })
+
+    instance.on('moveend', () => {
+      if (!persistViewRef.current) return
+      const { lng, lat } = instance.getCenter()
+      onViewChangeRef.current({ center: [lng, lat], zoom: instance.getZoom() })
+    })
 
     return () => {
-      map.remove()
-      mapRef.current = null
-      setIsReady(false)
+      instance.remove()
+      setMap(null)
     }
-  }, [center, styleUrl, zoom])
+  }, [])
+
+  // Swap basemaps in place: the new vector style replaces the old one while
+  // every source and layer the page added is carried across untouched.
+  useEffect(() => {
+    if (!map || basemapRef.current === basemap) return
+    basemapRef.current = basemap
+    storeBasemap(basemap)
+
+    map.setStyle(BASEMAPS[basemap].style, {
+      transformStyle: (previous, next): StyleSpecification => {
+        const basemapIds = basemapIdsRef.current
+        basemapIdsRef.current = {
+          sources: new Set(Object.keys(next.sources)),
+          layers: new Set(next.layers.map((layer) => layer.id)),
+        }
+        if (!previous) return next
+
+        const pageSources = Object.fromEntries(
+          Object.entries(previous.sources).filter(
+            ([id]) => !basemapIds.sources.has(id),
+          ),
+        )
+        const pageLayers = previous.layers.filter(
+          (layer) => !basemapIds.layers.has(layer.id),
+        )
+        return {
+          ...next,
+          sources: { ...next.sources, ...pageSources },
+          layers: [...next.layers, ...pageLayers],
+        }
+      },
+    })
+  }, [basemap, map])
 
   return (
     <div
@@ -98,13 +191,34 @@ export function MapCanvas({
         'relative overflow-hidden rounded-md bg-slate-200',
         className,
       )}
+      data-basemap={basemap}
       data-testid="map-canvas"
-      ref={ref}
+      ref={(node) => {
+        setWrapper(node)
+        if (typeof ref === 'function') ref(node)
+        else if (ref) ref.current = node
+      }}
     >
       <div ref={containerRef} className="absolute inset-0" />
-      {!isReady && (
-        <div className="absolute inset-0 grid place-items-center bg-field text-sm font-medium text-slate-600">
-          Loading map
+      {map ? (
+        <>
+          <MapControls
+            basemap={basemap}
+            fullscreenTarget={wrapper}
+            map={map}
+            onBasemapChange={setBasemap}
+          />
+          <MapScaleBar map={map} />
+        </>
+      ) : (
+        <div
+          aria-live="polite"
+          className="absolute inset-0 grid place-items-center bg-field text-sm font-medium text-slate-600"
+        >
+          <span className="flex items-center gap-2">
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+            Loading map
+          </span>
         </div>
       )}
       {children}
